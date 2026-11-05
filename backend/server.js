@@ -11,7 +11,7 @@ const jwt = require("jsonwebtoken");
 const Product = require("./models/Product");
 const Order = require("./models/Order");
 const Admin = require("./models/Admin");
-const { requireAdmin } = require("./middleware");
+const { requireAdmin } = require("./authMiddleware");
 
 const app = express();
 
