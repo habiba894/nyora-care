@@ -1,7 +1,4 @@
 
-const dns = require("dns");
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
-
 require("dotenv").config();
 
 const express = require("express");
@@ -17,6 +14,7 @@ const Admin = require("./models/Admin");
 const { requireAdmin } = require("./middleware");
 
 const app = express();
+
 const PORT = process.env.PORT || 5000;
 const DELIVERY_FEE = 50;
 
@@ -35,6 +33,106 @@ const RESET_CONFIRMATION = "DELETE_ALL_TEST_ORDERS";
 
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
+
+// ==========================================
+// DATABASE CONNECTION
+// ==========================================
+
+let dbConnectionPromise = null;
+
+async function connectDatabase() {
+  if (mongoose.connection.readyState === 1) {
+    return;
+  }
+
+  if (!process.env.MONGODB_URI) {
+    throw new Error("MONGODB_URI is missing.");
+  }
+
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is missing.");
+  }
+
+  if (!dbConnectionPromise) {
+    dbConnectionPromise = mongoose
+      .connect(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 10000
+      })
+      .then(async () => {
+        console.log("MongoDB connected successfully!");
+        console.log("MongoDB database:", mongoose.connection.name);
+
+        const adminEmail = process.env.ADMIN_EMAIL
+          ?.trim()
+          .toLowerCase();
+
+        if (!adminEmail) {
+          throw new Error("ADMIN_EMAIL is missing.");
+        }
+
+        let admin = await Admin.findOne({
+          email: adminEmail
+        });
+
+        if (!admin) {
+          if (!process.env.ADMIN_PASSWORD) {
+            throw new Error(
+              "ADMIN_PASSWORD is required to create the admin account."
+            );
+          }
+
+          const hashedPassword = await bcrypt.hash(
+            process.env.ADMIN_PASSWORD,
+            12
+          );
+
+          admin = await Admin.create({
+            name: process.env.ADMIN_NAME?.trim() || "Habiba",
+            email: adminEmail,
+            password: hashedPassword,
+            role: "admin"
+          });
+
+          console.log("[ADMIN] Admin account created.");
+        } else if (admin.role !== "admin") {
+          admin.role = "admin";
+          await admin.save();
+
+          console.log("[ADMIN] Existing admin role updated.");
+        } else {
+          console.log("[ADMIN] Admin account already exists.");
+        }
+      })
+      .catch(error => {
+        dbConnectionPromise = null;
+        throw error;
+      });
+  }
+
+  await dbConnectionPromise;
+}
+
+// IMPORTANT:
+// Connect to MongoDB BEFORE all API routes.
+// This is required for Vercel serverless requests.
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDatabase();
+    next();
+  } catch (error) {
+    console.error("[DATABASE] Connection error:", error.message);
+
+    return res.status(503).json({
+      success: false,
+      message: "Database connection failed. Please try again."
+    });
+  }
+});
+
+// ==========================================
+// HELPER FUNCTIONS
+// ==========================================
 
 function normalizeStatus(value) {
   return typeof value === "string"
@@ -85,7 +183,10 @@ function getPaymentMethod(order) {
   return "";
 }
 
+// ==========================================
 // EMAIL CONFIGURATION
+// ==========================================
+
 const emailConfigured = Boolean(
   process.env.SMTP_HOST?.trim() &&
   process.env.SMTP_PORT?.trim() &&
@@ -95,7 +196,10 @@ const emailConfigured = Boolean(
 );
 
 const smtpUser = process.env.SMTP_USER?.trim();
-const smtpPass = process.env.SMTP_PASS?.trim().replace(/\s+/g, "");
+
+const smtpPass = process.env.SMTP_PASS
+  ?.trim()
+  .replace(/\s+/g, "");
 
 const smtpPort = Number(process.env.SMTP_PORT);
 
@@ -114,11 +218,14 @@ const emailTransporter = emailConfigured
     })
   : null;
 
+// ==========================================
 // SEND ORDER EMAIL
+// ==========================================
+
 async function sendOrderNotification(order) {
   if (!emailTransporter) {
     throw new Error(
-      "Email settings are missing. Check backend/.env."
+      "Email settings are missing. Check environment variables."
     );
   }
 
@@ -148,8 +255,11 @@ async function sendOrderNotification(order) {
     from:
       process.env.SMTP_FROM?.trim() ||
       `Nyora Beauty <${smtpUser}>`,
+
     to: process.env.ORDER_NOTIFICATION_EMAIL.trim(),
+
     subject: `Nyora Beauty - New Order ${order.orderNumber}`,
+
     text: `
 New order received - Nyora Beauty
 
@@ -178,8 +288,10 @@ Order status: ${order.status}
 
 Important: Verify an InstaPay transfer independently before confirming payment.
 `,
+
     html: `
       <div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;color:#49343b;line-height:1.7">
+
         <h2>New order received - Nyora Beauty</h2>
 
         <p>
@@ -201,6 +313,7 @@ Important: Verify an InstaPay transfer independently before confirming payment.
         </p>
 
         <h3>Order items</h3>
+
         <ul>${itemsHtml}</ul>
 
         <p>
@@ -216,16 +329,20 @@ Important: Verify an InstaPay transfer independently before confirming payment.
         </p>
 
         <p>Verify an InstaPay transfer independently before confirming payment.</p>
+
       </div>
     `
   });
 
   console.log(
-    `[EMAIL] Order notification sent successfully: ${order.orderNumber}`
+    `[EMAIL] Order notification sent: ${order.orderNumber}`
   );
 }
 
+// ==========================================
 // HOME
+// ==========================================
+
 app.get("/", (req, res) => {
   return res.status(200).json({
     success: true,
@@ -233,7 +350,10 @@ app.get("/", (req, res) => {
   });
 });
 
+// ==========================================
 // ADMIN LOGIN
+// ==========================================
+
 app.post("/api/admin/login", async (req, res) => {
   try {
     const { email, password } = req.body || {};
@@ -261,7 +381,10 @@ app.post("/api/admin/login", async (req, res) => {
       email: email.trim().toLowerCase()
     }).select("+password");
 
-    if (!admin || !(await bcrypt.compare(password, admin.password))) {
+    if (
+      !admin ||
+      !(await bcrypt.compare(password, admin.password))
+    ) {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password."
@@ -298,7 +421,10 @@ app.post("/api/admin/login", async (req, res) => {
   }
 });
 
+// ==========================================
 // HEALTH CHECK
+// ==========================================
+
 app.get("/api/health", (req, res) => {
   return res.status(200).json({
     success: true,
@@ -310,10 +436,15 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// ==========================================
 // GET ALL PRODUCTS
+// ==========================================
+
 app.get("/api/products", async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
+    const products = await Product.find().sort({
+      createdAt: -1
+    });
 
     return res.status(200).json({
       success: true,
@@ -330,7 +461,10 @@ app.get("/api/products", async (req, res) => {
   }
 });
 
+// ==========================================
 // GET ONE PRODUCT
+// ==========================================
+
 app.get("/api/products/:id", async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) {
@@ -363,7 +497,10 @@ app.get("/api/products/:id", async (req, res) => {
   }
 });
 
+// ==========================================
 // ADD PRODUCT — ADMIN ONLY
+// ==========================================
+
 app.post("/api/products", requireAdmin, async (req, res) => {
   try {
     const {
@@ -422,7 +559,10 @@ app.post("/api/products", requireAdmin, async (req, res) => {
   }
 });
 
+// ==========================================
 // UPDATE PRODUCT — ADMIN ONLY
+// ==========================================
+
 app.patch("/api/products/:id", requireAdmin, async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) {
@@ -473,8 +613,13 @@ app.patch("/api/products/:id", requireAdmin, async (req, res) => {
       });
     }
 
-    if (updates.stockQuantity === 0) updates.inStock = false;
-    if (updates.stockQuantity > 0) updates.inStock = true;
+    if (updates.stockQuantity === 0) {
+      updates.inStock = false;
+    }
+
+    if (updates.stockQuantity > 0) {
+      updates.inStock = true;
+    }
 
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({
@@ -486,7 +631,10 @@ app.patch("/api/products/:id", requireAdmin, async (req, res) => {
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       updates,
-      { new: true, runValidators: true }
+      {
+        new: true,
+        runValidators: true
+      }
     );
 
     if (!product) {
@@ -518,7 +666,10 @@ app.patch("/api/products/:id", requireAdmin, async (req, res) => {
   }
 });
 
+// ==========================================
 // ADMIN: GET ALL ORDERS
+// ==========================================
+
 app.get("/api/admin/orders", requireAdmin, async (req, res) => {
   try {
     const orders = await Order.find()
@@ -540,7 +691,10 @@ app.get("/api/admin/orders", requireAdmin, async (req, res) => {
   }
 });
 
-// ADMIN: DELETE TEST ORDERS — ADMIN ONLY
+// ==========================================
+// ADMIN: DELETE TEST ORDERS
+// ==========================================
+
 app.post(
   "/api/admin/orders/reset-test-orders",
   requireAdmin,
@@ -567,13 +721,6 @@ app.post(
         });
       }
 
-      if (mongoose.connection.readyState !== 1) {
-        return res.status(503).json({
-          success: false,
-          message: "Database is not connected."
-        });
-      }
-
       session = await mongoose.startSession();
 
       let deletedCount = 0;
@@ -588,8 +735,6 @@ app.post(
           throw error;
         }
 
-        // Restore reserved stock before deleting the orders.
-        // Do not save the orders here: they are being deleted in this transaction.
         for (const order of orders) {
           if (
             order.stockReserved !== true ||
@@ -624,11 +769,18 @@ app.post(
             await Product.updateOne(
               {
                 _id: productId,
-                stockQuantity: { $exists: true, $ne: null }
+                stockQuantity: {
+                  $exists: true,
+                  $ne: null
+                }
               },
               {
-                $inc: { stockQuantity: qty },
-                $set: { inStock: true }
+                $inc: {
+                  stockQuantity: qty
+                },
+                $set: {
+                  inStock: true
+                }
               },
               { session }
             );
@@ -657,7 +809,11 @@ app.post(
         });
       }
 
-      if (error.message?.startsWith("INVALID_RESERVED_ORDER_ITEM:")) {
+      if (
+        error.message?.startsWith(
+          "INVALID_RESERVED_ORDER_ITEM:"
+        )
+      ) {
         console.error("Reset orders stopped:", error.message);
 
         return res.status(409).json({
@@ -679,14 +835,14 @@ app.post(
         return res.status(503).json({
           success: false,
           message:
-            "MongoDB transactions are not supported by the current database setup. Configure MongoDB as a replica set before retrying. No transaction changes were committed."
+            "MongoDB transactions are not supported by the current database setup. Configure MongoDB as a replica set before retrying."
         });
       }
 
       return res.status(500).json({
         success: false,
         message:
-          "Failed to reset orders. Check the backend terminal for the detailed error. No partial transaction changes should be committed."
+          "Failed to reset orders. Check the backend logs."
       });
     } finally {
       if (session) {
@@ -696,383 +852,433 @@ app.post(
   }
 );
 
+// ==========================================
 // ADMIN: UPDATE ORDER STATUS
-app.patch("/api/admin/orders/:id/status", requireAdmin, async (req, res) => {
-  let session;
-  let operationError = null;
+// ==========================================
 
-  try {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid order ID."
-      });
-    }
+app.patch(
+  "/api/admin/orders/:id/status",
+  requireAdmin,
+  async (req, res) => {
+    let session;
+    let operationError = null;
 
-    const rawStatus = req.body?.status;
-    const status = normalizeStatus(rawStatus);
-    const allowedStatuses = Object.keys(ORDER_TRANSITIONS);
-
-    if (!allowedStatuses.includes(status)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid order status.",
-        receivedStatus: rawStatus ?? null,
-        allowedStatuses
-      });
-    }
-
-    session = await mongoose.startSession();
-
-    let updatedOrder = null;
-
-    await session.withTransaction(async () => {
-      operationError = null;
-      updatedOrder = null;
-
-      const order = await Order.findById(req.params.id).session(session);
-
-      if (!order) {
-        operationError = {
-          status: 404,
-          message: "Order not found."
-        };
-        return;
+    try {
+      if (!mongoose.isValidObjectId(req.params.id)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid order ID."
+        });
       }
 
-      const currentStatus = normalizeStatus(order.status);
+      const rawStatus = req.body?.status;
+      const status = normalizeStatus(rawStatus);
+      const allowedStatuses = Object.keys(ORDER_TRANSITIONS);
 
-      if (!ORDER_TRANSITIONS[currentStatus]) {
-        operationError = {
-          status: 409,
-          message: `The order has an unsupported current status: ${currentStatus || "missing"}.`
-        };
-        return;
+      if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid order status.",
+          receivedStatus: rawStatus ?? null,
+          allowedStatuses
+        });
       }
 
-      if (currentStatus === "cancelled" && status !== "cancelled") {
-        operationError = {
-          status: 409,
-          message:
-            "A cancelled order cannot be reactivated. Create a new order instead."
-        };
-        return;
-      }
+      session = await mongoose.startSession();
 
-      if (currentStatus === status) {
-        updatedOrder = order;
-        return;
-      }
+      let updatedOrder = null;
 
-      const allowedNext = ORDER_TRANSITIONS[currentStatus];
+      await session.withTransaction(async () => {
+        operationError = null;
+        updatedOrder = null;
 
-      if (!allowedNext.includes(status)) {
-        operationError = {
-          status: 409,
-          message: `An order cannot move from ${currentStatus} to ${status}.`
-        };
-        return;
-      }
+        const order = await Order.findById(req.params.id)
+          .session(session);
 
-      const shouldReserveStock =
-        status === "confirmed" && !order.stockReserved;
-
-      const shouldRestoreStock =
-        status === "cancelled" &&
-        order.stockReserved &&
-        !order.stockRestored;
-
-      // Reserve stock once when the order is confirmed.
-      if (shouldReserveStock) {
-        const requested = new Map();
-
-        for (const item of order.items || []) {
-          const productId = String(item.product);
-          const qty = Number(item.qty);
-
-          if (
-            !mongoose.isValidObjectId(productId) ||
-            !Number.isInteger(qty) ||
-            qty < 1
-          ) {
-            operationError = {
-              status: 409,
-              message:
-                "The order contains an invalid product or quantity."
-            };
-            throw new Error("ORDER_STOCK_OPERATION_ABORT");
-          }
-
-          requested.set(
-            productId,
-            (requested.get(productId) || 0) + qty
-          );
+        if (!order) {
+          operationError = {
+            status: 404,
+            message: "Order not found."
+          };
+          return;
         }
 
-        for (const [productId, qty] of requested) {
-          const product = await Product.findById(productId)
-            .session(session);
+        const currentStatus = normalizeStatus(order.status);
 
-          if (!product) {
-            operationError = {
-              status: 409,
-              message:
-                `Product for this order no longer exists (ID: ${productId}).`
-            };
-            throw new Error("ORDER_STOCK_OPERATION_ABORT");
-          }
+        if (!ORDER_TRANSITIONS[currentStatus]) {
+          operationError = {
+            status: 409,
+            message: `The order has an unsupported current status: ${currentStatus || "missing"}.`
+          };
+          return;
+        }
 
-          // Null stock quantity means stock tracking is not configured.
-          if (
-            product.stockQuantity === null ||
-            product.stockQuantity === undefined
-          ) {
-            if (!product.inStock) {
+        if (
+          currentStatus === "cancelled" &&
+          status !== "cancelled"
+        ) {
+          operationError = {
+            status: 409,
+            message:
+              "A cancelled order cannot be reactivated. Create a new order instead."
+          };
+          return;
+        }
+
+        if (currentStatus === status) {
+          updatedOrder = order;
+          return;
+        }
+
+        const allowedNext = ORDER_TRANSITIONS[currentStatus];
+
+        if (!allowedNext.includes(status)) {
+          operationError = {
+            status: 409,
+            message: `An order cannot move from ${currentStatus} to ${status}.`
+          };
+          return;
+        }
+
+        const shouldReserveStock =
+          status === "confirmed" && !order.stockReserved;
+
+        const shouldRestoreStock =
+          status === "cancelled" &&
+          order.stockReserved &&
+          !order.stockRestored;
+
+        // Reserve stock when order is confirmed.
+
+        if (shouldReserveStock) {
+          const requested = new Map();
+
+          for (const item of order.items || []) {
+            const productId = String(item.product);
+            const qty = Number(item.qty);
+
+            if (
+              !mongoose.isValidObjectId(productId) ||
+              !Number.isInteger(qty) ||
+              qty < 1
+            ) {
               operationError = {
                 status: 409,
-                message: `${product.name} is currently unavailable.`
+                message:
+                  "The order contains an invalid product or quantity."
               };
+
               throw new Error("ORDER_STOCK_OPERATION_ABORT");
             }
 
-            continue;
+            requested.set(
+              productId,
+              (requested.get(productId) || 0) + qty
+            );
           }
 
-          const result = await Product.updateOne(
-            {
-              _id: product._id,
-              inStock: true,
-              stockQuantity: { $gte: qty }
-            },
-            {
-              $inc: { stockQuantity: -qty }
-            },
-            { session }
-          );
+          for (const [productId, qty] of requested) {
+            const product = await Product.findById(productId)
+              .session(session);
 
-          if (result.modifiedCount !== 1) {
-            operationError = {
-              status: 409,
-              message:
-                `Not enough stock for ${product.name}. Available stock may have changed.`
-            };
-            throw new Error("ORDER_STOCK_OPERATION_ABORT");
+            if (!product) {
+              operationError = {
+                status: 409,
+                message:
+                  `Product for this order no longer exists (ID: ${productId}).`
+              };
+
+              throw new Error("ORDER_STOCK_OPERATION_ABORT");
+            }
+
+            if (
+              product.stockQuantity === null ||
+              product.stockQuantity === undefined
+            ) {
+              if (!product.inStock) {
+                operationError = {
+                  status: 409,
+                  message: `${product.name} is currently unavailable.`
+                };
+
+                throw new Error("ORDER_STOCK_OPERATION_ABORT");
+              }
+
+              continue;
+            }
+
+            const result = await Product.updateOne(
+              {
+                _id: product._id,
+                inStock: true,
+                stockQuantity: { $gte: qty }
+              },
+              {
+                $inc: {
+                  stockQuantity: -qty
+                }
+              },
+              { session }
+            );
+
+            if (result.modifiedCount !== 1) {
+              operationError = {
+                status: 409,
+                message:
+                  `Not enough stock for ${product.name}. Available stock may have changed.`
+              };
+
+              throw new Error("ORDER_STOCK_OPERATION_ABORT");
+            }
+
+            await Product.updateOne(
+              {
+                _id: product._id,
+                stockQuantity: 0
+              },
+              {
+                $set: {
+                  inStock: false
+                }
+              },
+              { session }
+            );
           }
 
-          await Product.updateOne(
-            {
-              _id: product._id,
-              stockQuantity: 0
-            },
-            {
-              $set: { inStock: false }
-            },
-            { session }
-          );
+          order.stockReserved = true;
+          order.stockRestored = false;
         }
 
-        order.stockReserved = true;
-        order.stockRestored = false;
-      }
+        // Restore stock when a reserved order is cancelled.
 
-      // Restore stock once if a reserved order is cancelled.
-      if (shouldRestoreStock) {
-        const requested = new Map();
+        if (shouldRestoreStock) {
+          const requested = new Map();
 
-        for (const item of order.items || []) {
-          const productId = String(item.product);
-          const qty = Number(item.qty);
+          for (const item of order.items || []) {
+            const productId = String(item.product);
+            const qty = Number(item.qty);
 
-          if (
-            !mongoose.isValidObjectId(productId) ||
-            !Number.isInteger(qty) ||
-            qty < 1
-          ) {
-            operationError = {
-              status: 409,
-              message:
-                "The order contains an invalid product or quantity."
-            };
-            throw new Error("ORDER_STOCK_OPERATION_ABORT");
+            if (
+              !mongoose.isValidObjectId(productId) ||
+              !Number.isInteger(qty) ||
+              qty < 1
+            ) {
+              operationError = {
+                status: 409,
+                message:
+                  "The order contains an invalid product or quantity."
+              };
+
+              throw new Error("ORDER_STOCK_OPERATION_ABORT");
+            }
+
+            requested.set(
+              productId,
+              (requested.get(productId) || 0) + qty
+            );
           }
 
-          requested.set(
-            productId,
-            (requested.get(productId) || 0) + qty
-          );
+          for (const [productId, qty] of requested) {
+            await Product.updateOne(
+              {
+                _id: productId,
+                stockQuantity: {
+                  $exists: true,
+                  $ne: null
+                }
+              },
+              {
+                $inc: {
+                  stockQuantity: qty
+                },
+                $set: {
+                  inStock: true
+                }
+              },
+              { session }
+            );
+          }
+
+          order.stockRestored = true;
         }
 
-        for (const [productId, qty] of requested) {
-          await Product.updateOne(
-            {
-              _id: productId,
-              stockQuantity: { $exists: true, $ne: null }
-            },
-            {
-              $inc: { stockQuantity: qty },
-              $set: { inStock: true }
-            },
-            { session }
-          );
+        order.status = status;
+
+        if (!order.shipping) {
+          order.shipping = {};
         }
 
-        order.stockRestored = true;
-      }
-
-      order.status = status;
-
-      if (!order.shipping) {
-        order.shipping = {};
-      }
-
-      if (status === "shipped" && !order.shipping.shippedAt) {
-        order.shipping.shippedAt = new Date();
-      }
-
-      if (status === "delivered") {
-        if (!order.shipping.deliveredAt) {
-          order.shipping.deliveredAt = new Date();
+        if (status === "shipped" && !order.shipping.shippedAt) {
+          order.shipping.shippedAt = new Date();
         }
 
-        order.shipping.status = "delivered";
+        if (status === "delivered") {
+          if (!order.shipping.deliveredAt) {
+            order.shipping.deliveredAt = new Date();
+          }
+
+          order.shipping.status = "delivered";
+        }
+
+        await order.save({ session });
+
+        updatedOrder = order;
+      });
+
+      if (operationError) {
+        return res.status(operationError.status).json({
+          success: false,
+          message: operationError.message
+        });
       }
 
-      await order.save({ session });
-      updatedOrder = order;
-    });
-
-    if (operationError) {
-      return res.status(operationError.status).json({
-        success: false,
-        message: operationError.message
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Order status and stock updated successfully.",
-      data: updatedOrder
-    });
-  } catch (error) {
-    if (error.message === "ORDER_STOCK_OPERATION_ABORT") {
-      return res.status(operationError?.status || 409).json({
-        success: false,
-        message:
-          operationError?.message ||
-          "Stock could not be updated. Please refresh the order and try again."
-      });
-    }
-
-    console.error("Update order status error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message:
-        "Failed to update order status. Check the backend terminal for details."
-    });
-  } finally {
-    if (session) {
-      await session.endSession();
-    }
-  }
-});
-
-// ADMIN: CONFIRM ORDER PAYMENT
-app.patch("/api/admin/orders/:id/payment", requireAdmin, async (req, res) => {
-  try {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid order ID."
-      });
-    }
-
-    const paymentStatus = normalizeStatus(req.body?.paymentStatus);
-
-    if (!ALLOWED_PAYMENT_STATUSES.includes(paymentStatus)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid payment status.",
-        receivedPaymentStatus: req.body?.paymentStatus ?? null,
-        allowedPaymentStatuses: ALLOWED_PAYMENT_STATUSES
-      });
-    }
-
-    const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found."
-      });
-    }
-
-    const status = normalizeStatus(order.status);
-    const method = getPaymentMethod(order);
-    const currentPaymentStatus = normalizeStatus(order.paymentStatus);
-
-    if (status === "cancelled") {
-      return res.status(409).json({
-        success: false,
-        message:
-          "Cannot confirm payment for a cancelled order. Verify the refund separately."
-      });
-    }
-
-    if (currentPaymentStatus === "paid") {
       return res.status(200).json({
         success: true,
-        message: "Payment was already confirmed.",
+        message: "Order status and stock updated successfully.",
+        data: updatedOrder
+      });
+    } catch (error) {
+      if (error.message === "ORDER_STOCK_OPERATION_ABORT") {
+        return res.status(operationError?.status || 409).json({
+          success: false,
+          message:
+            operationError?.message ||
+            "Stock could not be updated. Please refresh the order and try again."
+        });
+      }
+
+      console.error("Update order status error:", error);
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Failed to update order status. Check the backend logs."
+      });
+    } finally {
+      if (session) {
+        await session.endSession();
+      }
+    }
+  }
+);
+
+// ==========================================
+// ADMIN: CONFIRM ORDER PAYMENT
+// ==========================================
+
+app.patch(
+  "/api/admin/orders/:id/payment",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      if (!mongoose.isValidObjectId(req.params.id)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid order ID."
+        });
+      }
+
+      const paymentStatus = normalizeStatus(
+        req.body?.paymentStatus
+      );
+
+      if (!ALLOWED_PAYMENT_STATUSES.includes(paymentStatus)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid payment status.",
+          receivedPaymentStatus:
+            req.body?.paymentStatus ?? null,
+          allowedPaymentStatuses: ALLOWED_PAYMENT_STATUSES
+        });
+      }
+
+      const order = await Order.findById(req.params.id);
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: "Order not found."
+        });
+      }
+
+      const status = normalizeStatus(order.status);
+      const method = getPaymentMethod(order);
+      const currentPaymentStatus = normalizeStatus(
+        order.paymentStatus
+      );
+
+      if (status === "cancelled") {
+        return res.status(409).json({
+          success: false,
+          message:
+            "Cannot confirm payment for a cancelled order. Verify the refund separately."
+        });
+      }
+
+      if (currentPaymentStatus === "paid") {
+        return res.status(200).json({
+          success: true,
+          message: "Payment was already confirmed.",
+          data: order
+        });
+      }
+
+      if (method === "cod" && status !== "delivered") {
+        return res.status(409).json({
+          success: false,
+          message:
+            "Cash on delivery payment can be confirmed only after delivery."
+        });
+      }
+
+      if (
+        method === "instapay" &&
+        ![
+          "confirmed",
+          "processing",
+          "shipped",
+          "delivered"
+        ].includes(status)
+      ) {
+        return res.status(409).json({
+          success: false,
+          message:
+            "Confirm the order first before confirming the InstaPay payment."
+        });
+      }
+
+      if (!["cod", "instapay"].includes(method)) {
+        return res.status(409).json({
+          success: false,
+          message:
+            "Unknown payment method. Check the order before confirming payment."
+        });
+      }
+
+      order.paymentStatus = "paid";
+
+      await order.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Payment confirmed successfully.",
         data: order
       });
-    }
+    } catch (error) {
+      console.error("Confirm payment error:", error.message);
 
-    if (method === "cod" && status !== "delivered") {
-      return res.status(409).json({
+      return res.status(500).json({
         success: false,
-        message:
-          "Cash on delivery payment can be confirmed only after delivery."
+        message: "Failed to confirm payment."
       });
     }
-
-    if (
-      method === "instapay" &&
-      !["confirmed", "processing", "shipped", "delivered"].includes(status)
-    ) {
-      return res.status(409).json({
-        success: false,
-        message:
-          "Confirm the order first before confirming the InstaPay payment."
-      });
-    }
-
-    if (!["cod", "instapay"].includes(method)) {
-      return res.status(409).json({
-        success: false,
-        message:
-          "Unknown payment method. Check the order before confirming payment."
-      });
-    }
-
-    order.paymentStatus = "paid";
-    await order.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Payment confirmed successfully.",
-      data: order
-    });
-  } catch (error) {
-    console.error("Confirm payment error:", error.message);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to confirm payment."
-    });
   }
-});
+);
 
+// ==========================================
 // ADMIN: STORE ANALYTICS
+// ==========================================
+
 app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
   try {
     const orders = await Order.find()
@@ -1080,15 +1286,23 @@ app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
       .lean();
 
     const productsCount = await Product.countDocuments();
+
     const currentYear = new Date().getFullYear();
 
-    const monthly = Array.from({ length: 12 }, (_, index) => ({
-      month: new Date(currentYear, index, 1).toLocaleString("en", {
-        month: "short"
-      }),
-      revenue: 0,
-      orders: 0
-    }));
+    const monthly = Array.from(
+      { length: 12 },
+      (_, index) => ({
+        month: new Date(
+          currentYear,
+          index,
+          1
+        ).toLocaleString("en", {
+          month: "short"
+        }),
+        revenue: 0,
+        orders: 0
+      })
+    );
 
     let revenue = 0;
     let pendingOrders = 0;
@@ -1096,7 +1310,9 @@ app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
 
     for (const order of orders) {
       const status = normalizeStatus(order.status);
-      const paymentStatus = normalizeStatus(order.paymentStatus);
+      const paymentStatus = normalizeStatus(
+        order.paymentStatus
+      );
 
       if (status === "pending") {
         pendingOrders += 1;
@@ -1118,10 +1334,12 @@ app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
           date.getFullYear() === currentYear
         ) {
           const monthIndex = date.getMonth();
+
           monthly[monthIndex].orders += 1;
 
           if (paymentStatus === "paid") {
-            monthly[monthIndex].revenue += Number(order.total) || 0;
+            monthly[monthIndex].revenue +=
+              Number(order.total) || 0;
           }
         }
       }
@@ -1148,14 +1366,12 @@ app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
   }
 });
 
+// ==========================================
 // CREATE ORDER — CUSTOMER CHECKOUT
+// ==========================================
+
 app.post("/api/orders", async (req, res) => {
   console.log("[CREATE ORDER] Request received");
-  console.log("[CREATE ORDER] Database:", mongoose.connection.name);
-  console.log(
-    "[CREATE ORDER] Connected:",
-    mongoose.connection.readyState === 1
-  );
 
   try {
     if (mongoose.connection.readyState !== 1) {
@@ -1165,7 +1381,12 @@ app.post("/api/orders", async (req, res) => {
       });
     }
 
-    const { customer, items, payment, orderNote } = req.body || {};
+    const {
+      customer,
+      items,
+      payment,
+      orderNote
+    } = req.body || {};
 
     if (
       !customer ||
@@ -1205,7 +1426,11 @@ app.post("/api/orders", async (req, res) => {
     for (const item of items) {
       const qty = Number(item?.qty);
 
-      if (!item?.id || !Number.isInteger(qty) || qty < 1) {
+      if (
+        !item?.id ||
+        !Number.isInteger(qty) ||
+        qty < 1
+      ) {
         return res.status(400).json({
           success: false,
           message: "One or more order items are invalid."
@@ -1243,7 +1468,8 @@ app.post("/api/orders", async (req, res) => {
 
       requestedQuantities.set(
         productId,
-        (requestedQuantities.get(productId) || 0) + Number(item.qty)
+        (requestedQuantities.get(productId) || 0) +
+          Number(item.qty)
       );
     }
 
@@ -1336,6 +1562,7 @@ app.post("/api/orders", async (req, res) => {
 
     const order = await Order.create({
       orderNumber,
+
       customer: {
         fullName: customer.fullName.trim(),
         email: customer.email.trim(),
@@ -1343,35 +1570,37 @@ app.post("/api/orders", async (req, res) => {
         governorate: customer.governorate.trim(),
         city: customer.city.trim(),
         address: customer.address.trim(),
+
         apartment:
           typeof customer.apartment === "string"
             ? customer.apartment.trim()
             : ""
       },
+
       orderNote: cleanOrderNote,
       items: orderItems,
       subtotal,
       delivery,
       total,
       payment,
+
       paymentStatus:
         payment === "cod"
           ? "cash_on_delivery"
           : "pending_payment",
+
       status: "pending"
     });
 
     console.log("[CREATE ORDER] Saved successfully");
     console.log("[CREATE ORDER] Order ID:", order._id.toString());
     console.log("[CREATE ORDER] Order number:", order.orderNumber);
-    console.log("[CREATE ORDER] Collection:", Order.collection.name);
-    console.log("[CREATE ORDER] Database:", mongoose.connection.name);
 
     const savedOrder = await Order.findById(order._id).lean();
 
     if (!savedOrder) {
       console.error(
-        "[CREATE ORDER] Verification failed for:",
+        "[CREATE ORDER] Verification failed:",
         order._id.toString()
       );
 
@@ -1388,10 +1617,12 @@ app.post("/api/orders", async (req, res) => {
     });
 
     // Email failure does not undo the saved order.
+
     sendOrderNotification(order).catch(error => {
       console.error(
         `[CREATE ORDER] Order ${order.orderNumber} was saved, but email notification failed.`
       );
+
       console.error("[EMAIL] Error code:", error.code || "N/A");
       console.error("[EMAIL] SMTP response:", error.responseCode || "N/A");
       console.error("[EMAIL] Error message:", error.message);
@@ -1420,7 +1651,10 @@ app.post("/api/orders", async (req, res) => {
   }
 });
 
+// ==========================================
 // HANDLE UNKNOWN ROUTES
+// ==========================================
+
 app.use((req, res) => {
   return res.status(404).json({
     success: false,
@@ -1428,49 +1662,20 @@ app.use((req, res) => {
   });
 });
 
-// START SERVER AFTER CONNECTING TO MONGODB
-async function startServer() {
-  try {
-    if (!process.env.MONGODB_URI) {
-      throw new Error("MONGODB_URI is missing from backend/.env");
-    }
+// ==========================================
+// LOCAL DEVELOPMENT
+// ==========================================
 
-    await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 10000
-    });
-
-    console.log("MongoDB connected successfully!");
-    console.log("MongoDB database:", mongoose.connection.name);
-    console.log("Order collection:", Order.collection.name);
-
-    if (!emailConfigured) {
-      console.error(
-        "[EMAIL] NOT CONFIGURED. Check SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, ORDER_NOTIFICATION_EMAIL in backend/.env."
-      );
-    } else {
-      try {
-        await emailTransporter.verify();
-
-        console.log("[EMAIL] Gmail SMTP authentication successful!");
-        console.log("[EMAIL] Order notifications are ready.");
-      } catch (error) {
-        console.error("[EMAIL] Gmail SMTP authentication failed.");
-        console.error("[EMAIL] Error code:", error.code || "N/A");
-        console.error("[EMAIL] SMTP response:", error.responseCode || "N/A");
-        console.error("[EMAIL] Error message:", error.message);
-        console.error(
-          "[EMAIL] Orders can still be saved, but notifications will not send until this is fixed."
-        );
-      }
-    }
-
-    app.listen(PORT, () => {
-      console.log(`Nyora Beauty API is running on http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error("Server startup failed:", error.message);
-    process.exit(1);
-  }
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(
+      `Nyora Beauty API is running on port ${PORT}`
+    );
+  });
 }
 
-startServer();
+// ==========================================
+// EXPORT EXPRESS APP
+// ==========================================
+
+module.exports = app;
