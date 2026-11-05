@@ -1,0 +1,241 @@
+
+/* =========================================================
+   NYORA BEAUTY — FONTS
+========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=DM+Sans:wght@400;500;600;700&family=El+Messiri:wght@400;500;600;700&display=swap");
+
+@import "tailwindcss";
+
+/* =========================================================
+   TAILWIND THEME
+========================================================= */
+
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-arabic: "El Messiri", sans-serif;
+
+  --color-nyora-cream: #F8F4EF;
+  --color-nyora-brown: #493438;
+  --color-nyora-rose: #A66D78;
+  --color-nyora-panel: #EDE3DD;
+  --color-nyora-muted: #715F5D;
+}
+
+/* =========================================================
+   GLOBAL RESET
+========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #F8F4EF;
+  color: #493438;
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* =========================================================
+   ARABIC TYPOGRAPHY
+   Arabic only — English remains unchanged
+========================================================= */
+
+html:lang(ar),
+html:lang(ar) body,
+[lang="ar"],
+[lang="ar"] * {
+  font-family: "El Messiri", sans-serif !important;
+}
+
+/* =========================================================
+   ENGLISH DISPLAY FONT
+========================================================= */
+
+.font-display {
+  font-family: "Cormorant Garamond", Georgia, serif;
+}
+
+/* =========================================================
+   FORM ELEMENTS
+   Keep Tailwind font sizes and weights working
+========================================================= */
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+img,
+video,
+svg {
+  display: block;
+}
+
+img,
+video {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font-size: inherit;
+}
+
+input,
+textarea,
+select {
+  max-width: 100%;
+}
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+:focus-visible {
+  outline: 2px solid #A66D78;
+  outline-offset: 3px;
+}
+
+::selection {
+  background: #E8CDD1;
+  color: #493438;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+html {
+  scrollbar-color: #C7A3A5 #F8F4EF;
+  scrollbar-width: thin;
+}
+
+html::-webkit-scrollbar {
+  width: 9px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #F8F4EF;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #C7A3A5;
+  border: 2px solid #F8F4EF;
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: #A66D78;
+}
+
+/* =========================================================
+   NYORA ANIMATIONS
+========================================================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out both;
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-up-delay {
+  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+.animate-fade-up-delay-2 {
+  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
+}
+
+.animate-fade-up-delay-3 {
+  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.36s both;
+}
+
+.animate-spin-slow {
+  animation: spinSlow 18s linear infinite;
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
