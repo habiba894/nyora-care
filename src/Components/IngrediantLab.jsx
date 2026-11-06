@@ -121,13 +121,13 @@ export default function IngredientLab() {
       id="ingredient-lab"
       lang={isArabic ? "ar" : "en"}
       dir={isArabic ? "rtl" : "ltr"}
-      className="relative overflow-hidden bg-[#EDE3DD] px-5 pb-16 pt-16 text-[#493438] sm:px-8 sm:pb-20 sm:pt-20 lg:px-12 lg:pb-24 lg:pt-24 xl:px-16"
+      className="relative overflow-hidden bg-[#EDE3DD] px-5 py-14 text-[#493438] sm:px-8 sm:py-16 lg:px-12 lg:py-20 xl:px-16"
     >
       <style>{`
         @keyframes ingredientImageEnter {
           from {
             opacity: 0;
-            transform: translateY(12px) scale(0.985);
+            transform: translateY(10px) scale(0.99);
           }
           to {
             opacity: 1;
@@ -146,12 +146,13 @@ export default function IngredientLab() {
         }
       `}</style>
 
-      <div className="mx-auto max-w-[1440px]">
+      <div className="mx-auto max-w-[1400px]">
+
         {/* SECTION HEADER */}
-        <header className="mx-auto mb-10 max-w-[760px] text-center sm:mb-14 lg:mb-16">
+        <header className="mx-auto mb-9 max-w-[720px] text-center sm:mb-11 lg:mb-12">
           <p
-            className={`mb-5 text-[10px] font-medium text-[#A66D78] sm:text-[11px] ${
-              isArabic ? "" : "uppercase tracking-[0.28em]"
+            className={`mb-3 text-[10px] font-medium text-[#A66D78] sm:text-[11px] ${
+              isArabic ? "" : "uppercase tracking-[0.25em]"
             }`}
             style={{ fontFamily: font }}
           >
@@ -159,7 +160,7 @@ export default function IngredientLab() {
           </p>
 
           <h2
-            className={`text-[clamp(2.5rem,5.5vw,4.5rem)] font-normal leading-[1.12] text-[#493438] ${
+            className={`text-[clamp(2.4rem,4.5vw,3.8rem)] font-normal leading-[1.15] text-[#493438] ${
               isArabic ? "" : "tracking-[-0.035em]"
             }`}
             style={{ fontFamily: headingFont }}
@@ -168,20 +169,21 @@ export default function IngredientLab() {
           </h2>
 
           <p
-            className="mx-auto mt-5 max-w-[580px] text-[15px] leading-[2] text-[#79686A] sm:mt-6 sm:text-[17px]"
+            className="mx-auto mt-3 max-w-[580px] text-[14px] leading-[1.9] text-[#79686A] sm:mt-4 sm:text-[15px]"
             style={{ fontFamily: font }}
           >
             {labels.subtitle}
           </p>
 
-          <div className="mx-auto mt-7 h-px w-12 bg-[#A66D78]/70 sm:mt-8" />
+          <div className="mx-auto mt-5 h-px w-10 bg-[#A66D78]/70 sm:mt-6" />
         </header>
 
         {/* PRODUCT SELECTOR AND MAIN IMAGE */}
-        <div className="grid items-center gap-6 lg:grid-cols-[270px_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[300px_minmax(0,1fr)] xl:gap-14">
+        <div className="grid items-center gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[285px_minmax(0,1fr)] xl:gap-11">
+
           {/* PRODUCT SELECTOR */}
           <aside className="order-2 min-w-0 lg:order-1">
-            <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="mb-3 flex items-center justify-between gap-3">
               <p
                 className={`text-[10px] font-medium text-[#A66D78] ${
                   isArabic ? "" : "uppercase tracking-[0.22em]"
@@ -206,14 +208,14 @@ export default function IngredientLab() {
                     type="button"
                     onClick={() => selectProduct(index)}
                     aria-pressed={selected}
-                    className={`group relative flex min-w-[155px] flex-1 items-center gap-3 rounded-2xl border px-3 py-3 text-start transition-all duration-300 lg:min-w-0 lg:flex-none lg:rounded-[20px] lg:px-4 lg:py-4 ${
+                    className={`group relative flex min-w-[155px] flex-1 items-center gap-3 rounded-[18px] border px-3 py-3 text-start transition-all duration-300 active:scale-[0.98] lg:min-w-0 lg:flex-none lg:rounded-[19px] lg:px-4 lg:py-3.5 ${
                       selected
-                        ? "border-[#A66D78]/55 bg-[#F8F4EF] shadow-[0_8px_24px_rgba(73,52,56,0.06)]"
+                        ? "border-[#A66D78]/55 bg-[#F8F4EF] shadow-[0_6px_18px_rgba(73,52,56,0.05)]"
                         : "border-transparent bg-transparent hover:border-[#E3D7D1] hover:bg-[#F8F4EF]/55"
                     }`}
                   >
                     <span
-                      className={`flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F8F4EF] transition-all duration-300 lg:h-[54px] lg:w-[54px] ${
+                      className={`flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F8F4EF] transition-all duration-300 lg:h-[52px] lg:w-[52px] ${
                         selected
                           ? "ring-1 ring-[#A66D78] ring-offset-2 ring-offset-[#F8F4EF]"
                           : "ring-1 ring-[#DCCBC3] group-hover:ring-[#A66D78]/60"
@@ -269,27 +271,30 @@ export default function IngredientLab() {
             </div>
 
             {/* DESKTOP SELECTOR FOOTER */}
-            <div className="mt-6 hidden items-center gap-3 border-t border-[#D8C7BF] pt-5 text-[10px] tracking-[0.15em] text-[#826D68] lg:flex">
+            <div className="mt-5 hidden items-center gap-3 border-t border-[#D8C7BF] pt-4 text-[10px] tracking-[0.15em] text-[#826D68] lg:flex">
               <span>
                 {String(selectedIndex + 1).padStart(2, "0")}
               </span>
+
               <span className="h-px flex-1 bg-[#D8C7BF]" />
+
               <span>05</span>
             </div>
           </aside>
 
           {/* MAIN PRODUCT IMAGE */}
           <div className="order-1 min-w-0 lg:order-2">
-            <div className="relative flex min-h-[250px] w-full items-center justify-center overflow-hidden rounded-[24px] border border-[#E3D7D1]/80 bg-[#F8F4EF]/45 px-3 py-5 sm:min-h-[340px] sm:rounded-[30px] sm:px-5 sm:py-7 lg:min-h-[490px] lg:px-8 lg:py-8 xl:min-h-[560px]">
-              {/* Subtle decorative circles */}
+            <div className="relative flex min-h-[250px] w-full items-center justify-center overflow-hidden rounded-[22px] border border-[#E3D7D1]/80 bg-[#F8F4EF]/55 px-3 py-5 sm:min-h-[330px] sm:rounded-[26px] sm:px-5 sm:py-6 lg:min-h-[440px] lg:px-7 lg:py-7 xl:min-h-[500px]">
+
+              {/* SUBTLE DECORATIVE CIRCLES */}
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 h-[65%] aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#D8C7BF]/50"
+                className="pointer-events-none absolute left-1/2 top-1/2 aspect-square h-[65%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#D8C7BF]/50"
               />
 
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 h-[48%] aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#D8C7BF]/40"
+                className="pointer-events-none absolute left-1/2 top-1/2 aspect-square h-[48%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#D8C7BF]/40"
               />
 
               {!imageError ? (
@@ -298,7 +303,7 @@ export default function IngredientLab() {
                   src={currentImage}
                   alt={labels.products[selectedIndex]}
                   onError={() => setImageError(true)}
-                  className="ingredient-main-image relative z-10 block h-auto max-h-[34vh] w-[88%] object-contain sm:max-h-[400px] sm:w-[78%] lg:max-h-[470px] lg:w-[78%] xl:max-h-[520px] xl:w-[80%]"
+                  className="ingredient-main-image relative z-10 block h-auto max-h-[34vh] w-[88%] object-contain sm:max-h-[370px] sm:w-[78%] lg:max-h-[420px] lg:w-[78%] xl:max-h-[460px] xl:w-[80%]"
                   draggable="false"
                 />
               ) : (
@@ -319,8 +324,8 @@ export default function IngredientLab() {
 
               {/* IMAGE COUNTER */}
               <span
-                className={`absolute top-4 text-[10px] tracking-[0.18em] text-[#826D68] sm:top-6 ${
-                  isArabic ? "left-4 sm:left-6" : "right-4 sm:right-6"
+                className={`absolute top-4 text-[10px] tracking-[0.18em] text-[#826D68] sm:top-5 ${
+                  isArabic ? "left-4 sm:left-5" : "right-4 sm:right-5"
                 }`}
               >
                 {String(selectedIndex + 1).padStart(2, "0")} — 05
@@ -328,8 +333,8 @@ export default function IngredientLab() {
 
               {/* BRAND SIGNATURE */}
               <span
-                className={`absolute bottom-4 text-[8px] tracking-[0.18em] text-[#A66D78]/80 sm:bottom-6 sm:text-[9px] ${
-                  isArabic ? "left-4 sm:left-6" : "right-4 sm:right-6"
+                className={`absolute bottom-4 text-[8px] tracking-[0.18em] text-[#A66D78]/80 sm:bottom-5 sm:text-[9px] ${
+                  isArabic ? "left-4 sm:left-5" : "right-4 sm:right-5"
                 }`}
                 style={{ fontFamily: font }}
               >
@@ -338,12 +343,12 @@ export default function IngredientLab() {
             </div>
 
             {/* MOBILE NAVIGATION */}
-            <div className="mt-5 flex items-center justify-center gap-5 lg:hidden">
+            <div className="mt-4 flex items-center justify-center gap-5 lg:hidden">
               <button
                 type="button"
                 onClick={previousProduct}
                 aria-label={labels.previous}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D8C7BF] text-[#493438] transition-colors hover:bg-[#F8F4EF]"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D8C7BF] text-[#493438] transition-all duration-300 hover:bg-[#F8F4EF] active:scale-95 active:bg-[#A66D78]/10"
               >
                 <span className="text-xl">
                   {isArabic ? "›" : "‹"}
@@ -371,7 +376,7 @@ export default function IngredientLab() {
                 type="button"
                 onClick={nextProduct}
                 aria-label={labels.next}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D8C7BF] text-[#493438] transition-colors hover:bg-[#F8F4EF]"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D8C7BF] text-[#493438] transition-all duration-300 hover:bg-[#F8F4EF] active:scale-95 active:bg-[#A66D78]/10"
               >
                 <span className="text-xl">
                   {isArabic ? "‹" : "›"}
@@ -380,7 +385,7 @@ export default function IngredientLab() {
             </div>
 
             {/* DESKTOP PROGRESS */}
-            <div className="mt-6 hidden items-center justify-center gap-3 lg:flex">
+            <div className="mt-5 hidden items-center justify-center gap-3 lg:flex">
               <span className="text-[10px] tracking-[0.15em] text-[#826D68]">
                 {String(selectedIndex + 1).padStart(2, "0")}
               </span>

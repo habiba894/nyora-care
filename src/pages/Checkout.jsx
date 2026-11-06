@@ -1354,7 +1354,7 @@ const Checkout = () => {
               <button
                 type="submit"
                 disabled={submitting || productsLoading}
-                className="group mt-7 flex w-full items-center justify-center gap-2 rounded-full bg-[#493438] px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-white transition-all duration-300 hover:bg-[#A66D78] disabled:cursor-not-allowed disabled:opacity-60"
+                className="group mt-7 flex w-full items-center justify-center gap-2 rounded-full bg-[#493438] px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] !text-white transition-all duration-300 hover:bg-[#A66D78] hover:!text-white disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitting
                   ? tr("Saving your order...", "جاري حفظ طلبك...")

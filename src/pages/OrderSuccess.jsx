@@ -644,7 +644,7 @@ const OrderSuccess = () => {
                   <button
                     type="button"
                     onClick={handleCopyPhone}
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#493438] px-6 text-[11px] font-semibold uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#62474D]"
+                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#493438] px-6 text-[11px] font-semibold uppercase tracking-[0.12em] !text-white transition-colors hover:bg-[#62474D] hover:!text-white"
                   >
                     {copied ? (
                       <CheckCircle size={15} />
@@ -776,9 +776,9 @@ const OrderSuccess = () => {
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 rounded-full bg-[#493438] px-8 py-3.5 text-[11px] font-bold text-white transition-colors duration-300 hover:bg-[#62474D]"
-          >
-            <ShoppingBag size={14} strokeWidth={1.8} />
+            className="inline-flex items-center gap-2 rounded-full bg-[#493438] px-8 py-3.5 text-[11px] font-bold !text-white transition-colors duration-300 hover:bg-[#62474D] hover:!text-white"
+           >
+           <ShoppingBag size={14} strokeWidth={1.8} />
             {t("Continue shopping", "متابعة التسوق")}
           </Link>
 

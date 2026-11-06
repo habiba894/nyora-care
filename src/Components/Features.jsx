@@ -50,69 +50,48 @@ const Features = () => {
     ? '"El Messiri", sans-serif'
     : '"Cormorant Garamond", Georgia, serif';
 
-  const content = {
-    en: {
-      eyebrow: "THE NYORA EXPERIENCE",
-      title: "Little things,",
-      highlight: "thoughtfully done.",
-    },
-    ar: {
-      eyebrow: "تجربة نيورا",
-      title: "تفاصيل صغيرة،",
-      highlight: "بعناية كبيرة.",
-    },
-  };
-
-  const text = isArabic ? content.ar : content.en;
-
   return (
     <section
       dir={isArabic ? "rtl" : "ltr"}
       lang={isArabic ? "ar" : "en"}
-      className="relative overflow-hidden bg-[#EDE3DD] px-5 py-20 sm:px-8 sm:py-24 lg:px-16 lg:py-28"
+      className="relative overflow-hidden bg-[#EDE3DD] px-5 py-14 sm:px-8 sm:py-16 lg:px-16 lg:py-20"
     >
       <div className="mx-auto max-w-[1400px]">
-       
-       
-{/* SECTION HEADER */}
-<div className="mx-auto mb-12 max-w-[760px] text-center sm:mb-16 lg:mb-20">
-  <p
-    className={`mb-5 text-[10px] font-medium text-[#A66D78] sm:text-[11px] ${
-      isArabic ? "" : "uppercase tracking-[0.28em]"
-    }`}
-    style={{ fontFamily: font }}
-  >
-    {isArabic ? "مميزاتنا وأكثر" : "FEATURES AND MORE"}
-  </p>
 
-  <h2
-    className={`text-[clamp(2.6rem,5.5vw,4.6rem)] font-normal leading-[1.12] text-[#493438] ${
-      isArabic ? "" : "tracking-[-0.035em]"
-    }`}
-    style={{
-      fontFamily: isArabic
-        ? '"El Messiri", sans-serif'
-        : '"Cormorant Garamond", Georgia, serif',
-    }}
-  >
-    {isArabic ? "إيه اللي بنقدمه؟" : "What we offer"}
-  </h2>
+        {/* SECTION HEADER */}
+        <div className="mx-auto mb-9 max-w-[720px] text-center sm:mb-11 lg:mb-13">
+          <p
+            className={`mb-3 text-[10px] font-medium text-[#A66D78] sm:text-[11px] ${
+              isArabic ? "" : "uppercase tracking-[0.25em]"
+            }`}
+            style={{ fontFamily: font }}
+          >
+            {isArabic ? "مميزاتنا وأكثر" : "FEATURES AND MORE"}
+          </p>
 
-  <p
-   className="mx-auto mt-5 max-w-[600px] text-[16px] leading-[2] text-[#79686A] sm:mt-6 sm:text-[18px]"
-    style={{ fontFamily: font }}
-  >
-    {isArabic
-      ? "كل تفصيلة في تجربتك مع نيورا مصممة عشان تمنحك عناية أسهل، وراحة أكبر، وتجربة جمال تستحقّيها."
-      : "From the moment you order to the care in every detail, we make your Nyora experience feel effortless, thoughtful, and special."}
-  </p>
+          <h2
+            className={`text-[clamp(2.4rem,4.5vw,3.8rem)] font-normal leading-[1.15] text-[#493438] ${
+              isArabic ? "" : "tracking-[-0.035em]"
+            }`}
+            style={{ fontFamily: headingFont }}
+          >
+            {isArabic ? "إيه اللي بنقدمه؟" : "What we offer"}
+          </h2>
 
-  <div className="mx-auto mt-7 h-px w-12 bg-[#A66D78]/70 sm:mt-8" />
-</div>
+          <p
+            className="mx-auto mt-3 max-w-[590px] text-[14px] leading-[1.9] text-[#79686A] sm:mt-4 sm:text-[15px]"
+            style={{ fontFamily: font }}
+          >
+            {isArabic
+              ? "كل تفصيلة في تجربتك مع نيورا مصممة عشان تمنحك عناية أسهل، وراحة أكبر، وتجربة جمال تستحقّيها."
+              : "From the moment you order to the care in every detail, we make your Nyora experience feel effortless, thoughtful, and special."}
+          </p>
 
+          <div className="mx-auto mt-5 h-px w-10 bg-[#A66D78]/70 sm:mt-6" />
+        </div>
 
         {/* FEATURE CARDS */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 sm:gap-5 lg:gap-7">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-4 lg:gap-6">
           {features.map((feature, index) => {
             const Icon = feature.icon;
 
@@ -120,33 +99,31 @@ const Features = () => {
               <article
                 key={feature.title.en}
                 dir={isArabic ? "rtl" : "ltr"}
-                className={`group relative flex min-h-[280px] flex-col overflow-hidden rounded-[22px] border border-[#E3D7D1] bg-[#F8F4EF] p-7 transition-all duration-500 ease-out hover:-translate-y-1.5 hover:border-[#A66D78]/50 hover:shadow-[0_20px_45px_rgba(73,52,56,0.09)] sm:min-h-[310px] sm:p-8 lg:p-10 ${
+                className={`group relative flex min-h-[245px] flex-col overflow-hidden rounded-[20px] border border-[#E3D7D1] bg-[#F8F4EF] p-6 transition-all duration-500 ease-out hover:-translate-y-1 hover:border-[#A66D78]/40 hover:shadow-[0_14px_32px_rgba(73,52,56,0.07)] active:-translate-y-1 active:border-[#A66D78]/50 active:shadow-[0_14px_32px_rgba(73,52,56,0.07)] sm:min-h-[265px] sm:p-7 lg:p-8 ${
                   isArabic ? "text-right" : "text-left"
                 }`}
               >
                 {/* CARD NUMBER */}
                 <span
-                  className={`absolute top-7 text-[10px] tracking-[0.18em] text-[#A66D78]/65 sm:top-8 ${
-                    isArabic ? "left-7 sm:left-8" : "right-7 sm:right-8"
+                  className={`absolute top-6 text-[10px] tracking-[0.18em] text-[#A66D78]/65 sm:top-7 ${
+                    isArabic ? "left-6 sm:left-7" : "right-6 sm:right-7"
                   }`}
                 >
                   0{index + 1}
                 </span>
 
                 {/* ICON */}
-                <div className="flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-full border border-[#A66D78]/25 bg-[#A66D78]/[0.08] transition-all duration-500 group-hover:border-[#A66D78] group-hover:bg-[#A66D78]">
+                <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full border border-[#A66D78]/25 bg-[#A66D78]/[0.07] transition-all duration-500 group-hover:border-[#A66D78] group-hover:bg-[#A66D78] group-active:border-[#A66D78] group-active:bg-[#A66D78]">
                   <Icon
-                    size={25}
-                    strokeWidth={1.35}
-                    className="text-[#A66D78] transition-colors duration-500 group-hover:text-white"
+                    size={23}
+                    strokeWidth={1.4}
+                    className="text-[#A66D78] transition-colors duration-500 group-hover:text-white group-active:text-white"
                   />
                 </div>
 
                 {/* TITLE */}
                 <h3
-                  className={`mt-7 text-[23px] font-normal leading-[1.45] text-[#493438] transition-colors duration-300 group-hover:text-[#A66D78] sm:text-[24px] lg:text-[26px] ${
-                    isArabic ? "" : "font-display"
-                  }`}
+                  className="mt-5 text-[21px] font-normal leading-[1.4] text-[#493438] transition-colors duration-300 group-hover:text-[#A66D78] group-active:text-[#A66D78] sm:text-[22px] lg:text-[24px]"
                   style={{ fontFamily: headingFont }}
                 >
                   {isArabic ? feature.title.ar : feature.title.en}
@@ -154,23 +131,25 @@ const Features = () => {
 
                 {/* DECORATIVE LINE */}
                 <span
-                  className={`mt-4 block h-px w-9 bg-[#A66D78] transition-all duration-500 group-hover:w-16 ${
+                  className={`mt-3 block h-px w-8 bg-[#A66D78] transition-all duration-500 group-hover:w-12 group-active:w-12 ${
                     isArabic ? "ml-auto" : "mr-auto"
                   }`}
                 />
 
                 {/* DESCRIPTION */}
                 <p
-                  className={`mt-4 text-[14px] leading-[1.95] text-[#79686A] sm:text-[15px] ${
-                    isArabic ? "" : ""
-                  }`}
+                  className="mt-3 text-[13px] leading-[1.85] text-[#79686A] sm:text-[14px]"
                   style={{ fontFamily: font }}
                 >
                   {isArabic ? feature.text.ar : feature.text.en}
                 </p>
 
-                {/* SUBTLE BOTTOM ACCENT */}
-                <div className="absolute inset-x-0 bottom-0 h-[2px] origin-left scale-x-0 bg-[#A66D78] transition-transform duration-500 group-hover:scale-x-100" />
+                {/* BOTTOM ACCENT */}
+                <div
+                  className={`absolute bottom-0 h-[2px] w-full origin-left scale-x-0 bg-[#A66D78] transition-transform duration-500 group-hover:scale-x-100 group-active:scale-x-100 ${
+                    isArabic ? "right-0" : "left-0"
+                  }`}
+                />
               </article>
             );
           })}

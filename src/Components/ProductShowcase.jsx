@@ -15,7 +15,7 @@ const getProductImageSrc = (image) => {
   if (value.startsWith("/")) return value;
 
   return `/${value
-    .replace(/^(?:\.\/)+/, "")
+    .replace(/^(?:\.\.\/)+/, "")
     .split("/")
     .map(encodeURIComponent)
     .join("/")}`;
@@ -124,34 +124,33 @@ const ProductShowcase = () => {
     product.id ?? product._id ?? product.apiId;
 
   const actionClass =
-    "flex h-11 w-11 items-center justify-center rounded-full border border-[#E7D9D1] bg-[#FBF7F2] text-[#493438] shadow-sm transition-all duration-300 hover:border-[#A66D78] hover:text-[#A66D78] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#A66D78]";
+    "flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-[#E7D9D1] bg-[#FBF7F2] text-[#493438] shadow-sm transition-all duration-300 hover:border-[#A66D78] hover:text-[#A66D78] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#A66D78]";
 
   return (
     <section
       id="shop"
       dir={isArabic ? "rtl" : "ltr"}
       lang={isArabic ? "ar" : "en"}
-      className="relative scroll-mt-24 overflow-hidden bg-[#F8F4EF] px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-28"
+      className="relative scroll-mt-24 overflow-hidden bg-[#F8F4EF] px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
     >
       {/* Soft background detail */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-32 top-20 h-72 w-72 rounded-full bg-[#EAD5D5]/20 blur-3xl"
+        className="pointer-events-none absolute -right-32 top-16 h-64 w-64 rounded-full bg-[#EAD5D5]/20 blur-3xl sm:h-72 sm:w-72"
       />
 
       <div className="relative mx-auto w-full max-w-[1400px]">
-
         {/* Centered heading */}
-        <div className="mx-auto mb-12 max-w-[760px] text-center sm:mb-16 lg:mb-20">
+        <div className="mx-auto mb-9 max-w-[720px] text-center sm:mb-11 lg:mb-14">
           <p
-            className="mb-5 text-[10px] font-medium uppercase tracking-[0.28em] text-[#A66D78] sm:text-[11px]"
+            className="mb-3 text-[10px] font-medium uppercase tracking-[0.25em] text-[#A66D78] sm:mb-4 sm:text-[11px]"
             style={{ fontFamily: font }}
           >
             {text.eyebrow}
           </p>
 
           <h2
-            className="text-[clamp(2.8rem,6vw,5rem)] font-normal leading-[1.05] tracking-[-0.035em] text-[#493438]"
+            className="text-[clamp(2.4rem,5vw,4.2rem)] font-normal leading-[1.05] tracking-[-0.035em] text-[#493438]"
             style={{
               fontFamily: isArabic
                 ? '"El Messiri", sans-serif'
@@ -164,7 +163,8 @@ const ProductShowcase = () => {
             </span>
           </h2>
 
-          <p className="mx-auto mt-5 max-w-[540px] text-[16px] leading-[2] text-[#79686A] sm:mt-6 sm:text-[18px]"
+          <p
+            className="mx-auto mt-4 max-w-[500px] text-[14px] leading-[1.9] text-[#79686A] sm:mt-5 sm:text-[15px] sm:leading-[2]"
             style={{ fontFamily: font }}
           >
             {text.description}
@@ -175,7 +175,7 @@ const ProductShowcase = () => {
         {productsLoading && (
           <p
             role="status"
-            className="py-12 text-center text-sm text-[#79686A]"
+            className="py-10 text-center text-sm text-[#79686A]"
             style={{ fontFamily: font }}
           >
             {text.loading}
@@ -186,7 +186,7 @@ const ProductShowcase = () => {
         {!productsLoading && productsError && (
           <p
             role="status"
-            className="mb-6 text-center text-xs text-[#79686A]"
+            className="mb-5 text-center text-xs text-[#79686A]"
             style={{ fontFamily: font }}
           >
             {text.error}
@@ -196,7 +196,7 @@ const ProductShowcase = () => {
         {/* Best-selling products */}
         {!productsLoading &&
           (featuredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12">
+            <div className="grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-9 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-10">
               {featuredProducts.map((product, index) => {
                 const productId = getProductId(product);
                 const liked = Boolean(isLiked?.(productId));
@@ -236,8 +236,8 @@ const ProductShowcase = () => {
                         )}
 
                         <span
-                          className={`absolute top-4 text-[10px] tracking-[0.18em] text-[#493438]/75 ${
-                            isArabic ? "right-4" : "left-4"
+                          className={`absolute top-3 text-[10px] tracking-[0.18em] text-[#493438]/75 sm:top-4 ${
+                            isArabic ? "right-3 sm:right-4" : "left-3 sm:left-4"
                           }`}
                         >
                           0{index + 1}
@@ -246,8 +246,8 @@ const ProductShowcase = () => {
 
                       {/* Wishlist and cart buttons */}
                       <div
-                        className={`absolute top-4 flex flex-col gap-2 ${
-                          isArabic ? "left-4" : "right-4"
+                        className={`absolute top-3 flex flex-col gap-2 sm:top-4 ${
+                          isArabic ? "left-3 sm:left-4" : "right-3 sm:right-4"
                         }`}
                       >
                         <button
@@ -293,7 +293,7 @@ const ProductShowcase = () => {
 
                     {/* Product details */}
                     <div
-                      className={`mt-5 border-b border-[#E3D7D1] pb-5 transition-colors duration-300 group-hover:border-[#C99AA0] sm:mt-6 ${
+                      className={`mt-4 border-b border-[#E3D7D1] pb-4 transition-colors duration-300 group-hover:border-[#C99AA0] sm:mt-5 sm:pb-5 ${
                         isArabic ? "text-right" : "text-left"
                       }`}
                     >
@@ -306,9 +306,9 @@ const ProductShowcase = () => {
                             {getCategoryName(product.category)}
                           </p>
 
-                          <Link to={productPath} className="mt-2 block">
+                          <Link to={productPath} className="mt-1.5 block">
                             <h3
-                              className="text-[25px] font-normal leading-tight text-[#493438] transition-colors duration-300 group-hover:text-[#A66D78] sm:text-[29px]"
+                              className="text-[22px] font-normal leading-tight text-[#493438] transition-colors duration-300 group-hover:text-[#A66D78] sm:text-[25px] lg:text-[27px]"
                               style={{
                                 fontFamily: isArabic
                                   ? '"El Messiri", sans-serif'
@@ -321,7 +321,7 @@ const ProductShowcase = () => {
                         </div>
 
                         <p
-                          className="shrink-0 pt-4 text-[11px] font-medium text-[#493438] sm:text-[12px]"
+                          className="shrink-0 pt-4 text-[10px] font-medium text-[#493438] sm:text-[12px]"
                           style={{ fontFamily: font }}
                         >
                           {text.pricePrefix} {displayNumber(product.price)}
@@ -330,7 +330,7 @@ const ProductShowcase = () => {
 
                       {Number(product.reviews) > 0 && (
                         <p
-                          className="mt-3 text-[10px] text-[#8B7773]"
+                          className="mt-2 text-[10px] text-[#8B7773]"
                           style={{ fontFamily: font }}
                         >
                           {displayNumber(product.reviews)} {text.reviews}
@@ -344,7 +344,7 @@ const ProductShowcase = () => {
           ) : (
             <p
               role="status"
-              className="py-12 text-center text-sm text-[#79686A]"
+              className="py-10 text-center text-sm text-[#79686A]"
               style={{ fontFamily: font }}
             >
               {text.unavailable}
@@ -352,10 +352,10 @@ const ProductShowcase = () => {
           ))}
 
         {/* View all products */}
-        <div className="mt-12 flex justify-center sm:mt-16">
+        <div className="mt-9 flex justify-center sm:mt-11">
           <Link
             to="/shop"
-            className={`group inline-flex items-center gap-4 border-b border-[#A66D78] pb-3 text-[10px] font-medium text-[#493438] transition-colors duration-300 hover:border-[#493438] hover:text-[#A66D78] sm:text-[11px] ${
+           className={`group translate-y-8 inline-flex items-center gap-3 border-b border-[#A66D78] pb-2.5 text-[10px] font-medium text-[#493438] transition-colors duration-300 hover:border-[#493438] hover:text-[#A66D78] sm:gap-4 sm:pb-3 sm:text-[11px] ${
               isArabic ? "" : "uppercase tracking-[0.17em]"
             }`}
             style={{ fontFamily: font }}

@@ -279,7 +279,7 @@ const Cart = () => {
 
             <Link
               to="/shop"
-              className="mt-7 inline-flex rounded-full bg-[#493438] px-8 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-white transition-colors duration-300 hover:bg-[#62474D]"
+              className="mt-7 inline-flex rounded-full bg-[#493438] px-8 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] !text-white transition-colors duration-300 hover:bg-[#62474D] hover:!text-white"
             >
               {text.startShopping}
             </Link>
@@ -522,7 +522,7 @@ const Cart = () => {
 
               <Link
                 to="/checkout"
-                className="mt-7 flex w-full items-center justify-center rounded-full bg-[#493438] px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-white transition-colors duration-300 hover:bg-[#62474D]"
+               className="mt-7 flex w-full items-center justify-center rounded-full bg-[#493438] px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] !text-white transition-colors duration-300 hover:bg-[#62474D] hover:!text-white"
               >
                 {text.checkout}
               </Link>

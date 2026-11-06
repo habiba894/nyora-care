@@ -155,7 +155,7 @@ const Testimonials = () => {
     <section
       dir={isArabic ? "rtl" : "ltr"}
       lang={isArabic ? "ar" : "en"}
-      className="overflow-hidden bg-[#F8F4EF] px-4 pb-20 pt-16 sm:px-6 sm:pb-24 sm:pt-20 lg:px-8"
+      className="overflow-hidden bg-[#F8F4EF] px-4 pb-20 pt-10 sm:px-6 sm:pb-24 sm:pt-14 lg:px-8"
     >
       <div className="mx-auto max-w-[1700px]">
         {/* SECTION HEADER */}

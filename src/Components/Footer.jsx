@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { ArrowUp, ArrowUpRight, Leaf, Mail } from "lucide-react";
+import { ArrowUp, ArrowUpRight, Mail } from "lucide-react";
 import {
   FaInstagram,
   FaFacebook,
@@ -29,7 +30,6 @@ const FOOTER_LINKS = {
   ],
 };
 
-/* SAME FLOWER SVG USED IN THE FOOTER LOGO */
 const FlowerIcon = ({ className = "" }) => (
   <svg
     viewBox="0 0 40 48"
@@ -55,16 +55,15 @@ const FooterLogo = ({ isArabic }) => (
     aria-label={isArabic ? "الصفحة الرئيسية لنيورا بيوتي" : "Nyora Beauty home"}
     className="group inline-flex items-center gap-3"
   >
-    <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#A66D78] shadow-[0_6px_18px_rgba(166,109,120,0.16)] transition duration-500 group-hover:rotate-[-5deg] group-hover:scale-105">
-      <span className="absolute left-[6px] top-[9px] z-10 font-display text-[27px] font-medium leading-none tracking-[-0.05em] text-white">
+    <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#A66D78] shadow-[0_5px_16px_rgba(166,109,120,0.18)] transition duration-500 group-hover:rotate-[-5deg] group-hover:scale-105">
+      <span className="absolute left-[7px] top-[10px] z-10 font-display text-[28px] font-medium leading-none tracking-[-0.05em] text-white">
         N
       </span>
-
       <FlowerIcon className="absolute right-[2px] top-[3px] h-[36px] w-[28px] text-white" />
     </span>
 
     <span className="flex flex-col leading-none">
-      <span className="font-display text-[37px] font-medium tracking-[-0.045em] text-[#493438] transition-colors duration-300 group-hover:text-[#A66D78]">
+      <span className="font-display text-[38px] font-medium tracking-[-0.045em] text-[#493438] transition-colors duration-300 group-hover:text-[#A66D78]">
         {isArabic ? "نيورا" : "Nyora"}
       </span>
       <span className="mt-1 text-[9px] font-semibold tracking-[0.42em] text-[#A66D78]">
@@ -88,7 +87,7 @@ const SocialLink = ({ href, label, Icon, size }) => (
 );
 
 const FooterHeading = ({ children, isArabic }) => (
-  <div className="mb-5">
+  <div className="mb-6">
     <h3
       className={`text-[20px] font-normal text-[#493438] ${
         isArabic ? "font-sans" : "font-display"
@@ -96,7 +95,7 @@ const FooterHeading = ({ children, isArabic }) => (
     >
       {children}
     </h3>
-    <span className="mt-2.5 block h-[2px] w-7 rounded-full bg-[#A66D78]" />
+    <span className="mt-3 block h-[2px] w-8 rounded-full bg-[#A66D78]" />
   </div>
 );
 
@@ -154,7 +153,7 @@ const Footer = () => {
     <footer
       dir={isArabic ? "rtl" : "ltr"}
       lang={isArabic ? "ar" : "en"}
-      className="relative overflow-hidden border-t border-[#DCCFC9] bg-[#EDE3DD] px-5 pb-5 pt-12 sm:px-8 sm:pb-7 sm:pt-14 lg:px-14 lg:pt-16"
+      className="relative overflow-hidden border-t border-[#DCCFC9] bg-[#EDE3DD] px-5 pb-5 pt-10 sm:px-8 sm:pb-7 sm:pt-12 lg:px-14 lg:pt-14"
     >
       {/* BACKGROUND DETAILS */}
       <div
@@ -167,12 +166,11 @@ const Footer = () => {
         className="pointer-events-none absolute -bottom-20 -left-24 h-80 w-80 rounded-full bg-[#493438]/[0.035] blur-3xl"
       />
 
-      <div className="relative mx-auto max-w-[1500px]">
+      <div className="relative mx-auto max-w-[1450px]">
         {/* TOP STRIP */}
-        <div className="mb-10 flex flex-col items-start gap-4 border-b border-[#DCCFC9] pb-7 sm:mb-12 sm:flex-row sm:items-center sm:justify-between sm:pb-8">
+        <div className="mb-10 flex flex-col items-start gap-5 border-b border-[#DCCFC9] pb-7 sm:mb-12 sm:flex-row sm:items-center sm:justify-between sm:pb-8">
           <div className="flex items-center gap-3">
-            {/* FLOWER: reused SVG from FooterLogo */}
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F8F4EF] text-[#A66D78]">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F8F4EF] text-[#A66D78]">
               <FlowerIcon className="h-8 w-7" />
             </span>
 
@@ -193,7 +191,7 @@ const Footer = () => {
           <a
             href={`mailto:${CONTACT_EMAIL}`}
             dir="ltr"
-            className="inline-flex w-fit items-center gap-2 text-[13px] text-[#79686A] transition-colors hover:text-[#A66D78] sm:-translate-x-9"
+            className="inline-flex w-fit items-center gap-2 rounded-full border border-[#DCCFC9] bg-[#F8F4EF]/70 px-4 py-2.5 text-[12px] text-[#79686A] transition-all duration-300 hover:border-[#A66D78] hover:text-[#A66D78]"
           >
             <Mail size={15} strokeWidth={1.5} />
             <span>{CONTACT_EMAIL}</span>
@@ -201,7 +199,7 @@ const Footer = () => {
         </div>
 
         {/* MAIN GRID */}
-        <div className="grid grid-cols-1 gap-9 sm:grid-cols-2 sm:gap-x-10 lg:grid-cols-[1.35fr_0.7fr_0.8fr_1.15fr] lg:gap-12 xl:gap-16">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-x-10 lg:grid-cols-[1.3fr_0.7fr_0.8fr_1.2fr] lg:gap-10 xl:gap-16">
           {/* BRAND */}
           <div>
             <FooterLogo isArabic={isArabic} />
@@ -212,7 +210,7 @@ const Footer = () => {
                 : "Nyora Beauty is more than products. It's a story, a ritual, and a promise inspired by nature."}
             </p>
 
-            <div className="mt-5 flex items-center gap-2.5">
+            <div className="mt-6 flex items-center gap-2.5">
               <SocialLink href={SOCIAL_LINKS.instagram} label="Instagram" Icon={FaInstagram} size={17} />
               <SocialLink href={SOCIAL_LINKS.facebook} label="Facebook" Icon={FaFacebook} size={17} />
               <SocialLink href={SOCIAL_LINKS.tiktok} label="TikTok" Icon={FaTiktok} size={16} />
@@ -226,7 +224,7 @@ const Footer = () => {
               {isArabic ? "تسوّقي" : "Shop"}
             </FooterHeading>
 
-            <ul className="space-y-3.5">
+            <ul className="space-y-4">
               {FOOTER_LINKS.shop.map((link) => (
                 <li key={link.name}>
                   <FooterLink to={link.href} isArabic={isArabic}>
@@ -243,7 +241,7 @@ const Footer = () => {
               {isArabic ? "اكتشفي نيورا" : "Explore"}
             </FooterHeading>
 
-            <ul className="space-y-3.5">
+            <ul className="space-y-4">
               {FOOTER_LINKS.explore.map((link) => (
                 <li key={link.name}>
                   <FooterLink to={link.href} isArabic={isArabic}>
@@ -286,7 +284,7 @@ const Footer = () => {
 
             <form
               onSubmit={handleNewsletterSubmit}
-              className="mt-4 flex w-full max-w-[330px] items-center gap-1 rounded-full border border-[#D8C7BF] bg-[#F8F4EF] p-1 transition-colors duration-300 focus-within:border-[#A66D78]"
+              className="mt-5 flex w-full max-w-[340px] items-center gap-1 rounded-full border border-[#D8C7BF] bg-[#F8F4EF] p-1 transition-colors duration-300 focus-within:border-[#A66D78] focus-within:shadow-[0_0_0_3px_rgba(166,109,120,0.08)]"
             >
               <label htmlFor="footer-email" className="sr-only">
                 {isArabic ? "بريدك الإلكتروني" : "Your email address"}
@@ -307,14 +305,14 @@ const Footer = () => {
 
               <button
                 type="submit"
-                className="flex shrink-0 items-center gap-1 rounded-full bg-[#493438] px-3.5 py-2.5 text-[11px] font-medium text-white transition-all duration-300 hover:bg-[#A66D78] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A66D78]"
+                className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#493438] px-4 py-2.5 text-[11px] font-medium text-white transition-all duration-300 hover:bg-[#A66D78] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A66D78]"
               >
                 {isArabic ? "اشتركي" : "Subscribe"}
                 <ArrowUpRight size={13} aria-hidden="true" />
               </button>
             </form>
 
-            <p className="mt-2.5 max-w-[310px] text-[11px] leading-[1.8] text-[#79686A]">
+            <p className="mt-3 max-w-[310px] text-[11px] leading-[1.8] text-[#79686A]">
               {isArabic
                 ? "الاشتراك في القائمة البريدية هيتفعّل بعد ربط خدمة البريد الإلكتروني."
                 : "Newsletter sign-up will be enabled once an email service is connected."}
@@ -323,7 +321,7 @@ const Footer = () => {
         </div>
 
         {/* BOTTOM BAR */}
-        <div className="mt-10 border-t border-[#DCCFC9] pt-5 sm:mt-14 sm:pt-6">
+        <div className="mt-12 border-t border-[#DCCFC9] pt-6 sm:mt-14 sm:pt-7">
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
             <p className="text-center text-[12px] leading-6 text-[#79686A] sm:text-start">
               © {new Date().getFullYear()}{" "}
