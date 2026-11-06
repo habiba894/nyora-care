@@ -17,7 +17,7 @@ const CART_KEY = "nyora-cart";
 const WISHLIST_KEY = "nyora-wishlist";
 const ORDER_NOTE_KEY = "nyora-order-note";
 const ORDER_NOTE_MAX = 250;
-const API_URL = "http://localhost:5000/api/products";
+const API_URL = `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "")}/api/products`;
 
 const load = (key) => {
   try {

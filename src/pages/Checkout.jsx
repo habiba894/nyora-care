@@ -10,7 +10,7 @@ import {
 import { useStore } from "../context/StoreContext";
 import { useTranslation } from "react-i18next";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "")}/api`;
 const DELIVERY_FEE = 50;
 
 const SOCIAL_LINKS = {
