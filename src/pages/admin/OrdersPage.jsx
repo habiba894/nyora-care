@@ -370,7 +370,6 @@ function StatusDropdown({
     </div>
   );
 }
-
 function EmptyState({
   title,
   description,
@@ -381,9 +380,7 @@ function EmptyState({
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F3E8E4] text-[#A66D78]">
         <Icon size={25} />
       </div>
-
       <h3 className="mt-4 text-base font-medium text-[#493438]">{title}</h3>
-
       <p className="mt-2 max-w-sm text-sm leading-6 text-[#806C70]">
         {description}
       </p>
@@ -583,7 +580,6 @@ function OrderDetailsModal({ order, onClose }) {
             <h3 className="text-sm font-medium text-[#493438]">
               Ordered products ({items.length})
             </h3>
-
             {items.length ? (
               <div className="mt-3 overflow-hidden rounded-xl border border-[#E3D7D1] bg-white">
                 {items.map((item, index) => (
@@ -775,7 +771,6 @@ function PaymentConfirmationModal({ order, loading, onCancel, onConfirm }) {
     </div>
   );
 }
-
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1125,7 +1120,9 @@ export default function OrdersPage() {
   if (loading) {
     return (
       <section>
-        <p className="text-xs tracking-[0.18em] text-[#A66D78]">STORE MANAGEMENT</p>
+        <p className="text-xs tracking-[0.18em] text-[#A66D78]">
+          STORE MANAGEMENT
+        </p>
         <h1 className="mt-2 font-display text-4xl font-normal text-[#493438]">
           Orders
         </h1>
@@ -1144,7 +1141,9 @@ export default function OrdersPage() {
     <section>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs tracking-[0.18em] text-[#A66D78]">STORE MANAGEMENT</p>
+          <p className="text-xs tracking-[0.18em] text-[#A66D78]">
+            STORE MANAGEMENT
+          </p>
           <h1 className="mt-2 font-display text-4xl font-normal text-[#493438]">
             Orders
           </h1>
@@ -1243,12 +1242,19 @@ export default function OrdersPage() {
       <div className="mt-7 flex flex-col gap-3 sm:flex-row">
         <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-[#E3D7D1] bg-white px-4 py-3">
           <Search size={17} className="shrink-0 text-[#A18C8B]" />
+
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by order ID, customer, email, or phone..."
-            className="w-full bg-transparent text-sm text-[#493438] outline-none placeholder:text-[#B5A4A0]"
+            className="w-full !border-0 !outline-none !ring-0 !shadow-none bg-transparent text-sm text-[#493438] placeholder:text-[#B5A4A0] focus:!border-0 focus:!outline-none focus:!ring-0 focus:!shadow-none"
+            style={{
+              border: "none",
+              outline: "none",
+              boxShadow: "none",
+            }}
           />
+
           {search && (
             <button
               onClick={() => setSearch("")}
@@ -1366,7 +1372,7 @@ export default function OrdersPage() {
                             type="button"
                             onClick={() => confirmOrderPayment(orderId)}
                             disabled={updatingPaymentOrderId === orderId}
-                            className="mt-2 block whitespace-nowrap rounded-full border border-[#D9C1C7] bg-[#F8EDEA] px-3 py-2 text-xs font-medium text-[#542D3A] transition hover:border-[#A66D78] hover:bg-[#F0DDE1] disabled:cursor-wait disabled:opacity-60"
+                            className="mt-2 block whitespace-nowrap rounded-full border border-[#D9C1C7] bg-[#F8EDEA] px-3 py-2 text-xs font-medium text-[#7A414B] transition hover:bg-[#F2E1E1] disabled:cursor-wait disabled:opacity-60"
                           >
                             {updatingPaymentOrderId === orderId
                               ? "Confirming..."
@@ -1380,20 +1386,10 @@ export default function OrdersPage() {
                           </p>
                         )}
 
-                        {isOrderPaid(order) && currentStatus === "cancelled" && (
-                          <p className="mt-2 max-w-[160px] text-xs font-medium text-amber-700">
-                            Check refund status
-                          </p>
-                        )}
-
-                        {isOrderPaid(order) && ["pending", "failed"].includes(currentStatus) && (
-                          <p className="mt-2 max-w-[160px] text-xs font-medium text-red-700">
-                            Payment/order status mismatch
-                          </p>
-                        )}
-
                         {updatingOrderId === orderId && (
-                          <p className="mt-1 text-[10px] text-[#A66D78]">Updating...</p>
+                          <p className="mt-1 text-[10px] text-[#A66D78]">
+                            Updating...
+                          </p>
                         )}
                       </td>
 
@@ -1418,6 +1414,7 @@ export default function OrdersPage() {
           <p className="text-xs text-[#806C70]">
             Showing {filteredOrders.length} of {orders.length} orders
           </p>
+
           <button
             onClick={() => loadOrders({ silent: true })}
             disabled={refreshing}

@@ -163,9 +163,8 @@ export default function AdminLogin() {
 
     try {
       const response = await fetch(
-  `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "")}/api/admin/login`,
-  {
-        
+        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "")}/api/admin/login`,
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -215,12 +214,9 @@ export default function AdminLogin() {
   return (
     <main
       dir="ltr"
-      className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-[#F8EDE5] px-4 py-8 sm:px-7 lg:px-10"
+      className="admin-login-bg relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-[#F8EDE5] px-4 py-8 sm:px-7 lg:px-10"
       style={{
         backgroundImage: "url('/Login-background.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center center",
-        backgroundRepeat: "no-repeat",
       }}
     >
       <div
@@ -231,23 +227,23 @@ export default function AdminLogin() {
       <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16 xl:gap-24">
         {/* Brand introduction */}
         <section className="flex flex-col justify-center px-3 py-5 sm:px-8 lg:px-0 lg:py-12">
-                    <div className="animate-[fadeIn_.8s_ease-out_both] lg:-translate-y-10">
+          <div className="animate-[fadeIn_.8s_ease-out_both] lg:-translate-y-10">
             <NyoraLogo />
           </div>
 
-          {/* Admin Access block moved UP */}
+          {/* Admin Access block */}
           <div className="mt-10 sm:mt-14 lg:mt-24 lg:-translate-y-14">
             <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.38em] text-[#A66D78] sm:text-[11px]">
               Admin Access
             </p>
 
-            <h1 className="max-w-[470px] font-serif text-[43px] font-normal leading-[1.08] tracking-[-0.045em] text-[#493438] sm:text-[55px] lg:text-[58px] xl:text-[64px]">
+            <h1 className="max-w-[470px] font-serif text-[32px] font-normal leading-[1.15] tracking-[-0.025em] text-[#493438] sm:text-[40px] lg:text-[44px] xl:text-[48px]">
               Where Beauty
               <br />
               Meets Vision
             </h1>
 
-            <p className="mt-6 max-w-[390px] font-serif text-[16px] italic leading-[1.9] text-[#806C70] sm:text-[17px]">
+            <p className="mt-5 max-w-[390px] font-serif text-[13px] font-normal italic leading-[1.8] text-[#806C70] sm:text-[14px]">
               Manage your store, track your orders,
               <br className="hidden sm:block" />
               and keep your beauty journey growing.
@@ -259,9 +255,7 @@ export default function AdminLogin() {
 
         {/* Login form */}
         <section className="w-full animate-[fadeIn_.8s_.12s_ease-out_both]">
-          {/* Card moved LEFT */}
           <div className="mx-auto w-full max-w-[650px] rounded-[30px] border border-white/75 bg-[#FFFAF6]/80 px-6 py-9 shadow-[0_28px_90px_rgba(84,45,58,0.13)] backdrop-blur-[12px] sm:rounded-[38px] sm:px-10 sm:py-12 md:px-14 md:py-14 lg:-translate-x-12 lg:px-10 lg:py-12 xl:-translate-x-16 xl:px-[58px] xl:py-[52px]">
-
             {/* Leaf icon above the title */}
             <div className="mb-6 flex justify-center">
               <div className="flex h-[58px] w-[58px] items-center justify-center rounded-full border border-[#E8D3C8]/80 bg-[#F9EDE7]/75 text-[#B5687C]">
@@ -274,7 +268,7 @@ export default function AdminLogin() {
                 Private Access
               </p>
 
-              <h2 className="mt-3 font-serif text-[39px] font-normal leading-tight tracking-[-0.04em] text-[#493438] sm:text-[48px] md:text-[52px]">
+              <h2 className="mt-3 font-serif text-[29px] font-normal leading-tight tracking-[-0.02em] text-[#493438] sm:text-[34px] md:text-[38px]">
                 Welcome Back
               </h2>
 
@@ -413,6 +407,20 @@ export default function AdminLogin() {
       </footer>
 
       <style>{`
+    .admin-login-bg {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 767px) {
+  .admin-login-bg {
+    background-size: 100% 100%;
+    background-position: center top;
+    background-repeat: no-repeat;
+  }
+}
+
         @keyframes fadeIn {
           from {
             opacity: 0;

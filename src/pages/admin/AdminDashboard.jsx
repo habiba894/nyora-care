@@ -394,11 +394,29 @@ function CustomersPage() {
       </div>
 
       <div className="mt-7 flex items-center gap-3 rounded-full border border-[#E3D7D1] bg-white px-4 py-3">
-        <Search size={17} className="shrink-0 text-[#A18C8B]" />
-        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name, email, phone, or location" className="w-full bg-transparent text-sm outline-none placeholder:text-[#B5A4A0]" />
-        {search && <button onClick={() => setSearch("")} className="text-xs text-[#A66D78] hover:text-[#542D3A]">Clear</button>}
-      </div>
+  <Search size={17} className="shrink-0 text-[#A18C8B]" />
 
+  <input
+    value={search}
+    onChange={(event) => setSearch(event.target.value)}
+    placeholder="Search by name, email, phone, or location"
+    className="w-full min-w-0 appearance-none border-0 bg-transparent text-sm text-[#493438] placeholder:text-[#B5A4A0] !outline-none !ring-0 !shadow-none focus:!border-0 focus:!outline-none focus:!ring-0 focus:!shadow-none focus-visible:!outline-none"
+    style={{
+      border: "none",
+      outline: "none",
+      boxShadow: "none",
+    }}
+  />
+
+  {search && (
+    <button
+      onClick={() => setSearch("")}
+      className="shrink-0 text-xs text-[#A66D78] hover:text-[#542D3A]"
+    >
+      Clear
+    </button>
+  )}
+</div>
       <div className="mt-5 overflow-hidden rounded-2xl border border-[#E3D7D1] bg-white">
         {error ? (
           <div className="flex items-start gap-3 p-6 text-sm text-red-700">
@@ -456,7 +474,6 @@ function PlaceholderPage({ eyebrow, title, icon: Icon, description }) {
     </section>
   );
 }
-
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState("Overview");
@@ -918,19 +935,24 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-3 sm:gap-5">
-            <div className="hidden w-48 items-center gap-2 rounded-full border border-[#E3D7D1] bg-white px-4 py-2.5 md:flex xl:w-64">
-              <Search size={17} className="shrink-0 text-[#A18C8B]" />
-              <input
-                value={search}
-                onChange={(event) => {
-                  setSearch(event.target.value);
-                  setActivePage("Products");
-                }}
-                placeholder="Search products..."
-                className="w-full bg-transparent text-xs outline-none placeholder:text-[#B5A4A0]"
-              />
-            </div>
+           <div className="hidden w-48 items-center gap-2 rounded-full border border-[#E3D7D1] bg-white px-4 py-2.5 md:flex xl:w-64">
+  <Search size={17} className="shrink-0 text-[#A18C8B]" />
 
+  <input
+    value={search}
+    onChange={(event) => {
+      setSearch(event.target.value);
+      setActivePage("Products");
+    }}
+    placeholder="Search products..."
+    className="w-full min-w-0 appearance-none !border-0 !outline-none !ring-0 !shadow-none bg-transparent text-xs placeholder:text-[#B5A4A0] focus:!border-0 focus:!outline-none focus:!ring-0 focus:!shadow-none focus-visible:!outline-none"
+    style={{
+      border: "none",
+      outline: "none",
+      boxShadow: "none",
+    }}
+  />
+</div>
             <button
               className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E3D7D1] bg-white transition hover:bg-[#EDE3DD]"
               aria-label="Notifications"
@@ -953,8 +975,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </header>
-
-        <main className="mx-auto max-w-[1600px] p-5 sm:p-8">
+                <main className="mx-auto max-w-[1600px] p-5 sm:p-8">
           {loadError && (
             <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
               <CircleAlert size={19} className="mt-0.5 shrink-0" />
@@ -1210,26 +1231,27 @@ export default function AdminDashboard() {
                 </button>
               </div>
 
-              <div className="mt-7 flex items-center gap-3">
-                <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-[#E3D7D1] bg-white px-4 py-3">
-                  <Search size={17} className="shrink-0 text-[#A18C8B]" />
-                  <input
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                    placeholder="Search by product name or category"
-                    className="w-full bg-transparent text-sm outline-none placeholder:text-[#B5A4A0]"
-                  />
-                </div>
+             <div className="mt-7 flex items-center gap-3">
+  <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-[#E3D7D1] bg-white px-4 py-3">
+    <Search size={17} className="shrink-0 text-[#A18C8B]" />
 
-                <button
-                  onClick={() => loadProducts()}
-                  className="rounded-full border border-[#E3D7D1] bg-white p-3 text-[#806C70] hover:bg-[#EDE3DD]"
-                  aria-label="Refresh products"
-                >
-                  <RefreshCw size={18} />
-                </button>
-              </div>
+    <input
+      value={search}
+      onChange={(event) => setSearch(event.target.value)}
+      placeholder="Search by product name or category"
+      className="w-full min-w-0 appearance-none border-0 bg-transparent text-sm text-[#493438] placeholder:text-[#B5A4A0] !outline-none !ring-0 !shadow-none focus:!border-0 focus:!outline-none focus:!ring-0 focus:!shadow-none focus-visible:!outline-none"
+      style={{ border: "none", outline: "none", boxShadow: "none" }}
+    />
+  </div>
 
+  <button
+    onClick={() => loadProducts()}
+    className="rounded-full border border-[#E3D7D1] bg-white p-3 text-[#806C70] hover:bg-[#EDE3DD]"
+    aria-label="Refresh products"
+  >
+    <RefreshCw size={18} />
+  </button>
+</div>
               <div className="mt-5 overflow-hidden rounded-2xl border border-[#E3D7D1] bg-white">
                 <ProductTable products={filteredProducts} loading={loading} error={loadError} onEditStock={openStockEditor} />
               </div>

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { ArrowUp, ArrowUpRight, Mail } from "lucide-react";
+import { ArrowUp, ArrowUpRight, Mail, Sparkles } from "lucide-react";
 import {
   FaInstagram,
   FaFacebook,
@@ -80,9 +80,10 @@ const SocialLink = ({ href, label, Icon, size }) => (
     rel="noopener noreferrer"
     aria-label={`Visit Nyora Beauty on ${label}`}
     title={label}
-    className="flex h-10 w-10 items-center justify-center rounded-full border border-[#DCCFC9] bg-[#F8F4EF] text-[#79686A] transition-all duration-300 hover:-translate-y-1 hover:border-[#A66D78] hover:bg-[#A66D78] hover:text-white hover:shadow-[0_8px_20px_rgba(166,109,120,0.18)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A66D78]"
+    className="flex h-10 w-10 items-center justify-center rounded-full border border-[#DCCFC9] bg-[#F8F4EF] text-[#79686A] transition-all duration-300 hover:-translate-y-1 hover:border-[#A66D78] hover:bg-[#A66D78] hover:!text-white hover:shadow-[0_8px_20px_rgba(166,109,120,0.18)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A66D78]"
   >
-    <Icon size={size} aria-hidden="true" />
+    <Icon size={size} aria-hidden="true" className="text-current" />
+    
   </a>
 );
 
@@ -155,24 +156,17 @@ const Footer = () => {
       lang={isArabic ? "ar" : "en"}
       className="relative overflow-hidden border-t border-[#DCCFC9] bg-[#EDE3DD] px-5 pb-5 pt-10 sm:px-8 sm:pb-7 sm:pt-12 lg:px-14 lg:pt-14"
     >
-      {/* BACKGROUND DETAILS */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-[#A66D78]/[0.06] blur-3xl"
-      />
-
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-20 -left-24 h-80 w-80 rounded-full bg-[#493438]/[0.035] blur-3xl"
-      />
-
       <div className="relative mx-auto max-w-[1450px]">
-        {/* TOP STRIP */}
+
+        {/* TOP BRAND MESSAGE */}
         <div className="mb-10 flex flex-col items-start gap-5 border-b border-[#DCCFC9] pb-7 sm:mb-12 sm:flex-row sm:items-center sm:justify-between sm:pb-8">
-          <div className="flex items-center gap-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F8F4EF] text-[#A66D78]">
-              <FlowerIcon className="h-8 w-7" />
-            </span>
+          <div className="flex items-center gap-4">
+            <Sparkles
+              size={25}
+              strokeWidth={1.5}
+              aria-hidden="true"
+              className="shrink-0 text-[#A66D78]"
+            />
 
             <div>
               <p className="text-[15px] font-medium text-[#493438] sm:text-[16px]">
@@ -187,24 +181,16 @@ const Footer = () => {
               </p>
             </div>
           </div>
-
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            dir="ltr"
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-[#DCCFC9] bg-[#F8F4EF]/70 px-4 py-2.5 text-[12px] text-[#79686A] transition-all duration-300 hover:border-[#A66D78] hover:text-[#A66D78]"
-          >
-            <Mail size={15} strokeWidth={1.5} />
-            <span>{CONTACT_EMAIL}</span>
-          </a>
         </div>
 
         {/* MAIN GRID */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-x-10 lg:grid-cols-[1.3fr_0.7fr_0.8fr_1.2fr] lg:gap-10 xl:gap-16">
+
           {/* BRAND */}
           <div>
             <FooterLogo isArabic={isArabic} />
 
-            <p className="mt-5 max-w-[320px] text-[14px] leading-[1.9] text-[#79686A]">
+            <p className="mt-7 max-w-[320px] text-[14px] leading-[1.9] text-[#79686A]">
               {isArabic
                 ? "نيورا بيوتي مش مجرد منتجات، دي حكاية وشغف ووعد بالجمال مستوحى من الطبيعة."
                 : "Nyora Beauty is more than products. It's a story, a ritual, and a promise inspired by nature."}
@@ -216,6 +202,16 @@ const Footer = () => {
               <SocialLink href={SOCIAL_LINKS.tiktok} label="TikTok" Icon={FaTiktok} size={16} />
               <SocialLink href={SOCIAL_LINKS.whatsapp} label="WhatsApp" Icon={FaWhatsapp} size={18} />
             </div>
+
+            {/* EMAIL BELOW SOCIAL ICONS */}
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              dir="ltr"
+              className="mt-7 inline-flex items-center gap-2 text-[12px] text-[#79686A] transition-colors duration-300 hover:text-[#A66D78]"
+            >
+              <Mail size={14} strokeWidth={1.5} />
+              <span>{CONTACT_EMAIL}</span>
+            </a>
           </div>
 
           {/* SHOP */}
@@ -284,25 +280,24 @@ const Footer = () => {
 
             <form
               onSubmit={handleNewsletterSubmit}
-              className="mt-5 flex w-full max-w-[340px] items-center gap-1 rounded-full border border-[#D8C7BF] bg-[#F8F4EF] p-1 transition-colors duration-300 focus-within:border-[#A66D78] focus-within:shadow-[0_0_0_3px_rgba(166,109,120,0.08)]"
+              className="mt-5 flex w-full max-w-[340px] items-center gap-1 rounded-full border border-[#D8C7BF] bg-[#F8F4EF] p-1"
             >
               <label htmlFor="footer-email" className="sr-only">
                 {isArabic ? "بريدك الإلكتروني" : "Your email address"}
               </label>
 
               <input
-                id="footer-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder={isArabic ? "بريدك الإلكتروني" : "Your email address"}
-                dir={isArabic ? "rtl" : "ltr"}
-                className="min-w-0 w-full border-0 bg-transparent px-3 py-2.5 text-[12px] text-[#493438] outline-none placeholder:text-[#A89A96] focus:border-0 focus:outline-none focus:ring-0"
-              />
-
+  id="footer-email"
+  name="email"
+  type="email"
+  autoComplete="email"
+  required
+  value={email}
+  onChange={(event) => setEmail(event.target.value)}
+  placeholder={isArabic ? "بريدك الإلكتروني" : "Your email address"}
+  dir={isArabic ? "rtl" : "ltr"}
+  className="!min-w-0 !w-full !border-0 !bg-transparent !px-3 !py-2.5 !text-[12px] !text-[#493438] !outline-none !ring-0 !shadow-none placeholder:text-[#A89A96] focus:!border-0 focus:!outline-none focus:!ring-0 focus:!shadow-none focus-visible:!border-0 focus-visible:!outline-none focus-visible:!ring-0"
+/>
               <button
                 type="submit"
                 className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#493438] px-4 py-2.5 text-[11px] font-medium text-white transition-all duration-300 hover:bg-[#A66D78] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A66D78]"
@@ -312,7 +307,7 @@ const Footer = () => {
               </button>
             </form>
 
-            <p className="mt-3 max-w-[310px] text-[11px] leading-[1.8] text-[#79686A]">
+            <p className="mt-5 max-w-[310px] text-[11px] leading-[1.8] text-[#79686A]">
               {isArabic
                 ? "الاشتراك في القائمة البريدية هيتفعّل بعد ربط خدمة البريد الإلكتروني."
                 : "Newsletter sign-up will be enabled once an email service is connected."}
@@ -329,7 +324,6 @@ const Footer = () => {
               . {isArabic ? "جميع الحقوق محفوظة." : "All rights reserved."}
             </p>
 
-            {/* INSTAPAY + BACK TO TOP */}
             <div className="flex items-center gap-3">
               <img
                 src="/instapay.png"
@@ -344,13 +338,13 @@ const Footer = () => {
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 aria-label={isArabic ? "العودة إلى أعلى الصفحة" : "Back to top"}
                 title={isArabic ? "العودة للأعلى" : "Back to top"}
-                className="group flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#D8C7BF] bg-[#F8F4EF] text-[#A66D78] transition-all duration-300 hover:-translate-y-1 hover:border-[#493438] hover:bg-[#493438] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A66D78]"
+                className="group flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#D8C7BF] bg-[#A66D78] text-white transition-all duration-300 hover:-translate-y-1 hover:border-[#493438] hover:bg-[#493438] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A66D78]"
               >
                 <ArrowUp
                   size={16}
                   strokeWidth={1.6}
                   aria-hidden="true"
-                  className="transition-transform duration-300 group-hover:-translate-y-0.5"
+                  className="text-white transition-transform duration-300 group-hover:-translate-y-0.5"
                 />
               </button>
             </div>
