@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, ShoppingBag } from "lucide-react";
@@ -209,7 +208,7 @@ const Wishlist = () => {
 
             <Link
               to="/shop"
-              className="mt-7 inline-flex rounded-full bg-[#493438] px-8 py-3.5 text-[11px] font-bold transition-colors duration-300 hover:bg-[#62474D] text-white"
+              className="mt-7 inline-flex rounded-full bg-[#493438] px-8 py-3.5 text-[11px] font-bold transition-colors duration-300 hover:bg-[#62474D] !text-white"
             >
               {isArabic ? "تصفحي المتجر" : "Browse the shop"}
             </Link>

@@ -88,20 +88,17 @@ function LeafMark({ className = "", strokeWidth = 1.3 }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        {/* stem */}
         <path
           d="M40 650C140 590 200 550 262 500C330 445 380 400 420 350C460 295 500 250 535 195"
           vectorEffect="non-scaling-stroke"
         />
 
-        {/* leaves */}
         <path vectorEffect="non-scaling-stroke" d="M255 492Q334 401 308 283Q229 374 255 492Z" />
         <path vectorEffect="non-scaling-stroke" d="M270 506Q373 541 470 492Q367 457 270 506Z" />
         <path vectorEffect="non-scaling-stroke" d="M408 347Q470 255 437 150Q375 242 408 347Z" />
         <path vectorEffect="non-scaling-stroke" d="M426 353Q532 365 612 294Q506 282 426 353Z" />
         <path vectorEffect="non-scaling-stroke" d="M530 204Q632 169 642 62Q540 97 530 204Z" />
 
-        {/* faint centre lines inside each leaf */}
         <g opacity="0.4">
           <path vectorEffect="non-scaling-stroke" d="M255 492L292 346" />
           <path vectorEffect="non-scaling-stroke" d="M270 506L410 496" />
@@ -209,43 +206,46 @@ export default function AdminLogin() {
   }
 
   const inputClass =
-    "w-full rounded-[15px] border border-[#E4D3CA] bg-white/55 py-[17px] pl-[49px] pr-12 text-[14px] text-[#493438] outline-none transition duration-300 placeholder:text-[#AA9995] hover:border-[#C7A3A4] focus:border-[#A66D78] focus:bg-white/90 focus:ring-4 focus:ring-[#A66D78]/10";
+    "w-full rounded-[15px] border border-[#E4D3CA] bg-white/65 py-[16px] pl-[49px] pr-12 text-[14px] text-[#493438] outline-none transition duration-300 placeholder:text-[#AA9995] hover:border-[#C7A3A4] focus:border-[#A66D78] focus:bg-white/90 focus:ring-4 focus:ring-[#A66D78]/10";
 
   return (
     <main
       dir="ltr"
-      className="admin-login-bg relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-[#F8EDE5] px-4 py-8 sm:px-7 lg:px-10"
-      style={{
-        backgroundImage: "url('/Login-background.png')",
-      }}
+      className="admin-login-bg relative isolate flex min-h-screen flex-col items-center justify-center overflow-x-hidden bg-[#F8EDE5] px-4 py-7 sm:px-7 lg:px-10 lg:py-8"
     >
+      {/* Mobile only: leaves on both sides, image keeps its natural proportions */}
+      <div aria-hidden="true" className="admin-leaf admin-leaf-left md:hidden" />
+      <div aria-hidden="true" className="admin-leaf admin-leaf-right md:hidden" />
+
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-[#F8EDE5]/15 via-[#FFF9F4]/10 to-[#F8EDE5]/15"
       />
 
-      <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16 xl:gap-24">
+      <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-5 sm:gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16 xl:gap-24">
+
         {/* Brand introduction */}
-        <section className="flex flex-col justify-center px-3 py-5 sm:px-8 lg:px-0 lg:py-12">
+        <section className="flex flex-col items-center justify-center px-3 py-2 sm:px-8 lg:items-start lg:px-0 lg:py-12">
+
           <div className="animate-[fadeIn_.8s_ease-out_both] lg:-translate-y-10">
             <NyoraLogo />
           </div>
 
-          {/* Admin Access block */}
-          <div className="mt-10 sm:mt-14 lg:mt-24 lg:-translate-y-14">
-            <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.38em] text-[#A66D78] sm:text-[11px]">
+          {/* Desktop introduction */}
+          <div className="mt-10 hidden lg:mt-24 lg:block lg:-translate-y-14">
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.38em] text-[#A66D78]">
               Admin Access
             </p>
 
-            <h1 className="max-w-[470px] font-serif text-[32px] font-normal leading-[1.15] tracking-[-0.025em] text-[#493438] sm:text-[40px] lg:text-[44px] xl:text-[48px]">
+            <h1 className="max-w-[470px] font-serif text-[44px] font-normal leading-[1.15] tracking-[-0.025em] text-[#493438] xl:text-[48px]">
               Where Beauty
               <br />
               Meets Vision
             </h1>
 
-            <p className="mt-5 max-w-[390px] font-serif text-[13px] font-normal italic leading-[1.8] text-[#806C70] sm:text-[14px]">
+            <p className="mt-5 max-w-[390px] font-serif text-[14px] font-normal italic leading-[1.8] text-[#806C70]">
               Manage your store, track your orders,
-              <br className="hidden sm:block" />
+              <br />
               and keep your beauty journey growing.
             </p>
 
@@ -255,26 +255,27 @@ export default function AdminLogin() {
 
         {/* Login form */}
         <section className="w-full animate-[fadeIn_.8s_.12s_ease-out_both]">
-          <div className="mx-auto w-full max-w-[650px] rounded-[30px] border border-white/75 bg-[#FFFAF6]/80 px-6 py-9 shadow-[0_28px_90px_rgba(84,45,58,0.13)] backdrop-blur-[12px] sm:rounded-[38px] sm:px-10 sm:py-12 md:px-14 md:py-14 lg:-translate-x-12 lg:px-10 lg:py-12 xl:-translate-x-16 xl:px-[58px] xl:py-[52px]">
-            {/* Leaf icon above the title */}
-            <div className="mb-6 flex justify-center">
-              <div className="flex h-[58px] w-[58px] items-center justify-center rounded-full border border-[#E8D3C8]/80 bg-[#F9EDE7]/75 text-[#B5687C]">
-                <LeafMark className="h-[32px] w-[32px]" strokeWidth={1.3} />
+          <div className="mx-auto w-full max-w-[650px] rounded-[26px] border border-white/80 bg-[#FFFAF6]/80 px-5 py-7 shadow-[0_28px_90px_rgba(84,45,58,0.16)] backdrop-blur-[6px] sm:rounded-[34px] sm:px-10 sm:py-10 sm:backdrop-blur-[14px] md:px-14 md:py-12 lg:-translate-x-12 lg:rounded-[38px] lg:px-10 lg:py-12 xl:-translate-x-16 xl:px-[58px] xl:py-[52px]">
+
+            {/* Leaf icon */}
+            <div className="mb-5 flex justify-center sm:mb-6">
+              <div className="flex h-[52px] w-[52px] items-center justify-center rounded-full border border-[#E8D3C8]/80 bg-[#F9EDE7]/75 text-[#B5687C] sm:h-[58px] sm:w-[58px]">
+                <LeafMark className="h-[29px] w-[29px] sm:h-[32px] sm:w-[32px]" strokeWidth={1.3} />
               </div>
             </div>
 
             <div className="text-center">
-              <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[#A66D78] sm:text-[11px]">
+              <p className="text-[9px] font-medium uppercase tracking-[0.35em] text-[#A66D78] sm:text-[11px]">
                 Private Access
               </p>
 
-              <h2 className="mt-3 font-serif text-[29px] font-normal leading-tight tracking-[-0.02em] text-[#493438] sm:text-[34px] md:text-[38px]">
+              <h2 className="mt-3 font-serif text-[27px] font-normal leading-tight tracking-[-0.02em] text-[#493438] sm:text-[34px] md:text-[38px]">
                 Welcome Back
               </h2>
 
               <GoldDivider className="mx-auto mt-5 justify-center" />
 
-              <p className="mx-auto mt-6 max-w-[365px] font-serif text-[14px] leading-[1.9] text-[#806C70] sm:text-[15px]">
+              <p className="mx-auto mt-5 max-w-[365px] font-serif text-[13px] leading-[1.9] text-[#806C70] sm:mt-6 sm:text-[15px]">
                 Your store is waiting for you. Sign in to manage
                 your products and orders.
               </p>
@@ -282,12 +283,12 @@ export default function AdminLogin() {
 
             <form
               onSubmit={handleSubmit}
-              className="mt-8 space-y-5 text-left sm:mt-9 sm:space-y-6"
+              className="mt-7 space-y-5 text-left sm:mt-9 sm:space-y-6"
             >
               <div>
                 <label
                   htmlFor="admin-email"
-                  className="mb-2.5 block text-[13px] font-medium text-[#493438]"
+                  className="mb-2.5 block text-[12px] font-medium text-[#493438] sm:text-[13px]"
                 >
                   Email address
                 </label>
@@ -315,7 +316,7 @@ export default function AdminLogin() {
               <div>
                 <label
                   htmlFor="admin-password"
-                  className="mb-2.5 block text-[13px] font-medium text-[#493438]"
+                  className="mb-2.5 block text-[12px] font-medium text-[#493438] sm:text-[13px]"
                 >
                   Password
                 </label>
@@ -367,7 +368,7 @@ export default function AdminLogin() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group flex w-full items-center justify-center gap-4 rounded-[17px] bg-gradient-to-r from-[#542D3A] via-[#693748] to-[#7A4455] px-5 py-[18px] text-[11px] font-medium uppercase tracking-[0.19em] text-white shadow-[0_12px_28px_rgba(84,45,58,0.22)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_17px_34px_rgba(84,45,58,0.3)] focus:outline-none focus:ring-4 focus:ring-[#A66D78]/25 disabled:cursor-not-allowed disabled:opacity-60 sm:py-[19px] sm:text-[12px]"
+                className="group flex w-full items-center justify-center gap-4 rounded-[15px] bg-gradient-to-r from-[#542D3A] via-[#693748] to-[#7A4455] px-5 py-[16px] text-[10px] font-medium uppercase tracking-[0.16em] text-white shadow-[0_12px_28px_rgba(84,45,58,0.22)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_17px_34px_rgba(84,45,58,0.3)] focus:outline-none focus:ring-4 focus:ring-[#A66D78]/25 disabled:cursor-not-allowed disabled:opacity-60 sm:rounded-[17px] sm:py-[19px] sm:text-[12px] sm:tracking-[0.19em]"
               >
                 <span>
                   {loading ? "Signing in..." : "Sign in to dashboard"}
@@ -383,7 +384,7 @@ export default function AdminLogin() {
               </button>
             </form>
 
-            <div className="mt-7 border-t border-[#E9DCD5]/90 pt-6 sm:mt-9">
+            <div className="mt-6 border-t border-[#E9DCD5]/90 pt-5 sm:mt-9 sm:pt-6">
               <div className="flex items-center justify-center gap-2.5 text-[#8C7777]">
                 <ShieldCheck
                   size={18}
@@ -391,7 +392,7 @@ export default function AdminLogin() {
                   className="shrink-0 text-[#A66D78]"
                 />
 
-                <p className="text-center text-[10px] leading-5 sm:text-[11px]">
+                <p className="text-center text-[9px] leading-5 sm:text-[11px]">
                   Reserved for authorized Nyora Beauty administrators.
                 </p>
               </div>
@@ -400,32 +401,72 @@ export default function AdminLogin() {
         </section>
       </div>
 
-      <footer className="pointer-events-none absolute bottom-3 left-0 right-0 px-4 text-center">
-        <p className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#987E7B]/90">
+      <footer className="relative mt-5 w-full px-4 text-center lg:absolute lg:bottom-3 lg:left-0 lg:right-0 lg:mt-0">
+        <p className="text-[8px] font-medium uppercase tracking-[0.18em] text-[#987E7B]/90 sm:text-[9px] sm:tracking-[0.22em]">
           © {new Date().getFullYear()} Nyora Beauty · Administration
         </p>
       </footer>
 
       <style>{`
-    .admin-login-bg {
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-}
+        /* Tablet + desktop: the full background image, as before */
+        .admin-login-bg {
+          background-image: url('/Login-background.png');
+          background-size: cover;
+          background-position: center center;
+          background-repeat: no-repeat;
+        }
 
-@media (max-width: 767px) {
-  .admin-login-bg {
-    background-size: 100% 100%;
-    background-position: center top;
-    background-repeat: no-repeat;
-  }
-}
+        /* Mobile: no stretched image, leaves frame both sides instead */
+        @media (max-width: 767px) {
+          .admin-login-bg {
+            background-image: none;
+          }
+        }
+
+        .admin-leaf {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 58%;
+          z-index: -10;
+          pointer-events: none;
+          background-image: url('/Login-background.png');
+          background-repeat: no-repeat;
+          background-size: auto 100%;
+        }
+
+        .admin-leaf-left {
+          left: 0;
+          background-position: left center;
+          -webkit-mask-image: linear-gradient(to right, #000 55%, transparent 100%);
+          mask-image: linear-gradient(to right, #000 55%, transparent 100%);
+        }
+
+                .admin-leaf-left::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background: radial-gradient(
+            circle 340px at 0 0,
+            rgba(242, 213, 201, 0.95) 0%,
+            rgba(244, 218, 207, 0.85) 40%,
+            rgba(246, 226, 216, 0) 100%
+          );
+        }
+        .admin-leaf-right {
+          right: 0;
+          background-position: right center;
+          -webkit-mask-image: linear-gradient(to left, #000 55%, transparent 100%);
+          mask-image: linear-gradient(to left, #000 55%, transparent 100%);
+        }
 
         @keyframes fadeIn {
           from {
             opacity: 0;
             transform: translateY(12px);
           }
+
           to {
             opacity: 1;
             transform: translateY(0);

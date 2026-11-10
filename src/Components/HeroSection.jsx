@@ -1,33 +1,85 @@
-
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowRight, Leaf, Droplets } from "lucide-react";
 
-const heroContent = {
-  en: {
-    eyebrow: "Made with real ingredients",
-    headingTop: "Discover Your",
-    headingMid: "Natural",
-    headingHighlight: "Glow.",
-    description:
-      "Natural oils, rich butters, and little moments of self-care — made just for you.",
-    ctaText: "Explore rituals",
-    image: "/hero-slide-2.jpg",
-    imageAlt: "Nyora Beauty hair balm in soft natural light",
-    ratingLabel: "Loved by 100+ customers",
-  },
-  ar: {
-    eyebrow: "مكونات مختارة بعناية",
-    headingTop: "اكتشفي",
-    headingMid: "جمالك",
-    headingHighlight: "الطبيعي",
-    description:
-      "زيوت طبيعية وزبدات غنية، ولحظات صغيرة من العناية بنفسك — معمولة مخصوص ليكي.",
-    ctaText: "اكتشفي طقوس العناية",
-    image: "/hero-slide-2-ar.jpg",
-    imageAlt: "منتجات نيورا بيوتي بإضاءة طبيعية دافئة",
-    ratingLabel: "محبوب من +١٠٠ عميلة",
-  },
+const slides = {
+  en: [
+    {
+      eyebrow: "Made with real ingredients",
+      headingTop: "Discover Your",
+      headingMid: "Natural",
+      headingHighlight: "Glow.",
+      description:
+        "Natural oils, rich butters, and little moments of self-care — made just for you.",
+      ctaText: "Explore rituals",
+      image: "/hero-slide-2.jpg",
+      imageAlt: "Nyora Beauty hair balm in soft natural light",
+    },
+    {
+      eyebrow: "Natural beauty rituals",
+      headingTop: "Beauty",
+      headingMid: "that feels",
+      headingHighlight: "like you.",
+      description:
+        "Thoughtfully made rituals for your lips, body, hair and face — because everyday care should feel a little special.",
+      ctaText: "Shop the collection",
+      image: "/hero-slide4.png",
+      imageAlt:
+        "Nyora Beauty lip scrub, hair balm, face mask and lip gloss with pink peonies on marble",
+    },
+    {
+      eyebrow: "Egyptian made, globally loved",
+      headingTop: "Luxury,",
+      headingMid: "bottled",
+      headingHighlight: "for you.",
+      description:
+        "Every jar and bottle is made with care, so your everyday beauty routine feels a little more indulgent.",
+      ctaText: "Discover the range",
+      image: "/hero-slide-3.jpg",
+      imageAlt: "Nyora Beauty product with warm shadow and natural light",
+    },
+  ],
+  ar: [
+    {
+      eyebrow: "مكونات مختارة بعناية",
+      headingTop: "اكتشفي",
+      headingMid: "جمالك",
+      headingHighlight: "الطبيعي",
+      description:
+        "زيوت طبيعية وزبدات غنية، ولحظات صغيرة من العناية بنفسك — معمولة مخصوص ليكي.",
+      ctaText: "اكتشفي طقوس العناية",
+      image: "/hero-slide-2-ar.jpg",
+      imageAlt: "منتجات نيورا بيوتي بإضاءة طبيعية دافئة",
+    },
+    {
+      eyebrow: "طقوس جمال طبيعية",
+      headingTop: "جمال",
+      headingMid: "يحسّسك",
+      headingHighlight: "إنك إنتي",
+      description:
+        "طقوس معمولة بحب للشفايف والجسم والشعر والوش — لأن العناية اليومية تستاهل تبقى مميزة.",
+      ctaText: "تسوقي المجموعة",
+      image: "/hero-slide4.png",
+      imageAlt: "منتجات نيورا بيوتي على رخام مع بيوني وردي",
+    },
+    {
+      eyebrow: "صناعة مصرية، بحب عالمي",
+      headingTop: "فخامة",
+      headingMid: "جوه",
+      headingHighlight: "إزازة",
+      description:
+        "كل برطمان وإزازة معمولين بعناية، عشان روتين جمالك اليومي يبقى أدلع شوية.",
+      ctaText: "اكتشفي المنتجات",
+      image: "/hero-slide-3.jpg",
+      imageAlt: "منتج من نيورا بيوتي بإضاءة طبيعية دافئة",
+    },
+  ],
+};
+
+const ratingLabels = {
+  en: "Loved by 100+ customers",
+  ar: "محبوب من +١٠٠ عميلة",
 };
 
 const benefits = [
@@ -63,10 +115,21 @@ const BrandIcon = () => (
 
 const HeroSection = () => {
   const { i18n } = useTranslation();
+  const [active, setActive] = useState(0);
 
   const isArabic = i18n.language.startsWith("ar");
   const language = isArabic ? "ar" : "en";
-  const slide = heroContent[language];
+  const slideList = slides[language];
+  const slide = slideList[active];
+
+  // AUTO SLIDE
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActive((prev) => (prev + 1) % slides.en.length);
+    }, 5500);
+
+    return () => clearInterval(timer);
+  }, [active]);
 
   const headingFont = isArabic
     ? '"Noto Sans Arabic", sans-serif'
@@ -90,22 +153,26 @@ const HeroSection = () => {
     >
       <style>{`
         @keyframes nyoraFadeUp {
-          from {
-            opacity: 0;
-            transform: translateY(14px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(14px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes nyoraFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
 
         .nyora-fade-up {
           animation: nyoraFadeUp 0.8s ease-out both;
         }
 
+        .nyora-fade-in {
+          animation: nyoraFadeIn 1s ease-in-out both;
+        }
+
         @media (prefers-reduced-motion: reduce) {
-          .nyora-fade-up {
+          .nyora-fade-up,
+          .nyora-fade-in {
             animation: none;
           }
         }
@@ -125,10 +192,11 @@ const HeroSection = () => {
         }}
       >
         <img
+          key={`desktop-${language}-${active}`}
           src={slide.image}
           alt={slide.imageAlt}
           draggable="false"
-          className="absolute inset-0 h-full w-full select-none"
+          className="nyora-fade-in absolute inset-0 h-full w-full select-none"
           style={{
             objectFit: "cover",
             objectPosition: imagePosition,
@@ -151,142 +219,142 @@ const HeroSection = () => {
               isArabic ? "text-right" : "text-left"
             }`}
           >
-            {/* EYEBROW */}
-            <div
-              className={`mb-5 flex items-center gap-3 ${
-                isArabic
-                  ? "flex-row-reverse justify-end"
-                  : "justify-start"
-              }`}
-            >
-              <span className="h-px w-12 shrink-0 bg-[#A66D78]" />
-
-              <span
-                className={`text-[12px] font-normal text-[#A66D78] ${
-                  isArabic ? "" : "uppercase tracking-[0.25em]"
+            {/* Animated part: changes with every slide */}
+            <div key={`text-${language}-${active}`} className="nyora-fade-up">
+              {/* EYEBROW */}
+              <div
+                className={`mb-5 flex items-center gap-3 ${
+                  isArabic ? "flex-row-reverse justify-end" : "justify-start"
                 }`}
-                style={{ fontFamily: bodyFont }}
               >
-                {slide.eyebrow}
-              </span>
+                <span className="h-px w-12 shrink-0 bg-[#A66D78]" />
+
+                <span
+                  className={`text-[12px] font-normal text-[#A66D78] ${
+                    isArabic ? "" : "uppercase tracking-[0.25em]"
+                  }`}
+                  style={{ fontFamily: bodyFont }}
+                >
+                  {slide.eyebrow}
+                </span>
+              </div>
+
+              {/* HEADING */}
+              <h1
+                dir={isArabic ? "rtl" : "ltr"}
+                className={`font-normal text-[#493438] ${
+                  isArabic
+                    ? "max-w-[680px] text-[clamp(2.8rem,4.4vw,4.5rem)] leading-[1.5] tracking-normal"
+                    : "max-w-[560px] text-[clamp(3.1rem,4.9vw,5.25rem)] leading-[1.08] tracking-[-0.035em]"
+                }`}
+                style={{
+                  textWrap: "balance",
+                  fontFamily: headingFont,
+                  fontWeight: 400,
+                }}
+              >
+                {isArabic ? (
+                  <>
+                    <span>{slide.headingTop} </span>
+                    <span>{slide.headingMid} </span>
+                    <span
+                      className="inline-block text-[#A66D78]"
+                      style={{
+                        fontFamily: headingFont,
+                        fontStyle: "normal",
+                        fontWeight: 500,
+                        letterSpacing: "normal",
+                        paddingInline: "0.04em",
+                        paddingBottom: "0.08em",
+                      }}
+                    >
+                      {slide.headingHighlight}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span>{slide.headingTop}</span>
+                    <br />
+                    <span>{slide.headingMid}</span>
+                    <br />
+                    <span
+                      className="inline-block text-[#A66D78]"
+                      style={{
+                        fontFamily: headingFont,
+                        fontStyle: "italic",
+                        fontWeight: 400,
+                        letterSpacing: "-0.02em",
+                        paddingRight: "0.08em",
+                        paddingBottom: "0.08em",
+                      }}
+                    >
+                      {slide.headingHighlight}
+                    </span>
+                  </>
+                )}
+              </h1>
+
+              {/* DESCRIPTION */}
+              <p
+                dir={isArabic ? "rtl" : "ltr"}
+                className={`mt-5 max-w-[520px] text-[16px] font-normal leading-[1.9] text-[#715F5D] sm:text-[17px] ${
+                  isArabic ? "text-pretty" : ""
+                }`}
+                style={{ fontFamily: bodyFont, fontWeight: 400 }}
+              >
+                {slide.description}
+              </p>
+
+              {/* CTA BUTTON */}
+              <div className="mt-6 sm:mt-7">
+                <Link
+                  to="/shop"
+                  dir={isArabic ? "rtl" : "ltr"}
+                  className={`group inline-flex max-w-full items-center gap-4 rounded-full bg-[#493438] px-5 py-3.5 text-[12px] font-normal !text-white shadow-[0_12px_30px_rgba(73,52,56,0.16)] transition-all duration-500 hover:-translate-y-1 hover:bg-[#62474D] hover:!text-white sm:px-8 sm:py-4 ${
+                    isArabic ? "" : "uppercase tracking-[0.2em]"
+                  }`}
+                  style={{ fontFamily: bodyFont }}
+                >
+                  <span>{slide.ctaText}</span>
+
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F8F4EF] text-[#493438] transition-transform duration-300 group-hover:translate-x-1">
+                    <ArrowRight
+                      size={17}
+                      strokeWidth={1.5}
+                      className={isArabic ? "rotate-180" : ""}
+                    />
+                  </span>
+                </Link>
+              </div>
             </div>
 
-            {/* HEADING */}
-            <h1
-              dir={isArabic ? "rtl" : "ltr"}
-              className={`font-normal text-[#493438] ${
-                isArabic
-                  ? "max-w-[680px] text-[clamp(2.8rem,4.4vw,4.5rem)] leading-[1.5] tracking-normal"
-                  : "max-w-[560px] text-[clamp(3.1rem,4.9vw,5.25rem)] leading-[1.08] tracking-[-0.035em]"
+            {/* RATING (fixed, doesn't change with slides) */}
+            <div
+              className={`nyora-fade-up mt-5 flex flex-wrap items-center gap-3 ${
+                isArabic ? "flex-row-reverse justify-end" : ""
               }`}
-              style={{
-                textWrap: "balance",
-                fontFamily: headingFont,
-                fontWeight: 400,
-              }}
+              style={{ animationDelay: "0.3s" }}
             >
-              {isArabic ? (
-                <>
-                  <span>{slide.headingTop} </span>
-                  <span>{slide.headingMid} </span>
-                  <span
-                    className="inline-block text-[#A66D78]"
-                    style={{
-                      fontFamily: headingFont,
-                      fontStyle: "normal",
-                      fontWeight: 500,
-                      letterSpacing: "normal",
-                      paddingInline: "0.04em",
-                      paddingBottom: "0.08em",
-                    }}
-                  >
-                    {slide.headingHighlight}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span>{slide.headingTop}</span>
-                  <br />
-                  <span>{slide.headingMid}</span>
-                  <br />
-                  <span
-                    className="inline-block text-[#A66D78]"
-                    style={{
-                      fontFamily: headingFont,
-                      fontStyle: "italic",
-                      fontWeight: 400,
-                      letterSpacing: "-0.02em",
-                      paddingRight: "0.08em",
-                      paddingBottom: "0.08em",
-                    }}
-                  >
-                    {slide.headingHighlight}
-                  </span>
-                </>
-              )}
-            </h1>
+              <div className="flex items-center text-[22px] tracking-[0.1em] text-[#C9929B]">
+                ★★★★★
+              </div>
 
-            {/* DESCRIPTION */}
-            <p
-              dir={isArabic ? "rtl" : "ltr"}
-              className={`mt-5 max-w-[520px] text-[16px] font-normal leading-[1.9] text-[#715F5D] sm:text-[17px] ${
-                isArabic ? "text-pretty" : ""
-              }`}
-              style={{ fontFamily: bodyFont, fontWeight: 400 }}
-            >
-              {slide.description}
-            </p>
+              <span
+                className="text-[17px] font-medium text-[#493438]"
+                style={{ fontFamily: bodyFont }}
+              >
+                4.9
+              </span>
 
-            {/* CTA BUTTON */}
-           {/* CTA BUTTON */}
-<div className="mt-6 sm:mt-7">
-  <Link
-    to="/shop"
-    dir={isArabic ? "rtl" : "ltr"}
-    className={`group inline-flex max-w-full items-center gap-4 rounded-full bg-[#493438] px-5 py-3.5 text-[12px] font-normal !text-white shadow-[0_12px_30px_rgba(73,52,56,0.16)] transition-all duration-500 hover:-translate-y-1 hover:bg-[#62474D] hover:!text-white sm:px-8 sm:py-4 ${
-      isArabic ? "" : "uppercase tracking-[0.2em]"
-    }`}
-    style={{ fontFamily: bodyFont }}
-  >
-    <span>{slide.ctaText}</span>
+              <span className="h-5 w-px bg-[#D9C6BE]" />
 
-    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F8F4EF] text-[#493438] transition-transform duration-300 group-hover:translate-x-1">
-      <ArrowRight
-        size={17}
-        strokeWidth={1.5}
-        className={isArabic ? "rotate-180" : ""}
-      />
-    </span>
-  </Link>
-
-  {/* RATING */}
-  <div
-    className={`nyora-fade-up mt-5 flex flex-wrap items-center gap-3 ${
-      isArabic ? "flex-row-reverse justify-end" : ""
-    }`}
-    style={{ animationDelay: "0.3s" }}
-  >
-    <div className="flex items-center text-[22px] tracking-[0.1em] text-[#C9929B]">
-      ★★★★★
-    </div>
-
-    <span
-      className="text-[17px] font-medium text-[#493438]"
-      style={{ fontFamily: bodyFont }}
-    >
-      4.9
-    </span>
-
-    <span className="h-5 w-px bg-[#D9C6BE]" />
-
-    <span
-      className="text-[15px] font-medium text-[#493438]"
-      style={{ fontFamily: bodyFont }}
-    >
-      {slide.ratingLabel}
-    </span>
-  </div>
-</div>
+              <span
+                className="text-[15px] font-medium text-[#493438]"
+                style={{ fontFamily: bodyFont }}
+              >
+                {ratingLabels[language]}
+              </span>
+            </div>
 
             {/* BRAND BENEFITS */}
             <div className="mt-7 flex flex-wrap items-center gap-y-3 sm:mt-8 lg:mt-9">
@@ -325,15 +393,37 @@ const HeroSection = () => {
                 );
               })}
             </div>
+
+            {/* SLIDE DOTS */}
+            <div
+              className={`mt-7 flex items-center gap-3 ${
+                isArabic ? "justify-start" : ""
+              }`}
+            >
+              {slideList.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setActive(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`h-[6px] rounded-full transition-all duration-500 ${
+                    i === active
+                      ? "w-8 bg-[#A66D78]"
+                      : "w-[6px] bg-[#A66D78]/25 hover:bg-[#A66D78]/50"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
           {/* MOBILE IMAGE - FULL IMAGE, NO CROPPING */}
           <div className="relative z-10 -mx-3 mt-1 min-w-0 overflow-hidden sm:-mx-5 lg:hidden">
             <img
+              key={`mobile-${language}-${active}`}
               src={slide.image}
               alt={slide.imageAlt}
               draggable="false"
-              className="block h-auto w-full select-none"
+              className="nyora-fade-in block h-auto w-full select-none"
               style={{
                 width: "100%",
                 height: "auto",
